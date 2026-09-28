@@ -1,35 +1,79 @@
-# ORASOLU website starter
+# ORASOLU
 
-This is the first reusable Astro design foundation for ORASOLU.
+**Explore · Engineer · Automate · Evolve**
 
-## Install / run
+ORASOLU is a technical knowledge platform focused primarily on Oracle Database and related enterprise technology, built around practical engineering experience across databases, cloud, infrastructure, automation, DevOps, and technology operations.
 
-From the existing ORASOLU Astro project:
+The platform brings together technical articles, tools, scripts, experiments, troubleshooting approaches, migration knowledge, and practical lessons from real-world technology work.
 
-1. Copy the `src` and `public` folders from this package into the project root.
-2. Replace existing files when prompted.
-3. Run:
+---
 
-```bash
-npm run dev
-```
+## About ORASOLU
 
-Then open `http://localhost:4321`.
+ORASOLU is designed as a practical technical knowledge base.
 
-## Branding
+The primary focus is Oracle Database, including areas such as:
 
-The starter includes:
-- `public/branding/orasolu-logo.png`
-- `public/branding/orasolu-icon.png`
+- Database architecture
+- Database administration
+- SQL and PL/SQL
+- Performance and diagnostics
+- High availability
+- Oracle RAC
+- Data Guard
+- Backup and recovery
+- Database migrations
+- Troubleshooting
+- Oracle Cloud
+- Exadata and engineered systems
 
-You can replace these later with the final master logo assets without changing the components.
+The platform also covers related areas including:
 
-## Next build stages
+- Cloud and infrastructure
+- Linux
+- DevOps
+- Automation
+- Ansible
+- Terraform
+- Jenkins
+- Shell scripting
+- Python
+- Enterprise technology
 
-- Real article/tool/migration/lab content collections
-- Search
-- Dark mode polish
-- Real social links
-- SEO / Open Graph / sitemap / RSS
-- GitHub integration
-- Production deployment
+The goal is simple:
+
+> Discover useful technical knowledge, understand the engineering behind it, and apply it to real-world problems.
+
+---
+
+## Website
+
+The ORASOLU website is built with [Astro](https://astro.build/).
+
+The site provides:
+
+- Technical articles
+- Tools and resources
+- Topic-based knowledge
+- Author information
+- Practical technical references
+- A foundation for future labs, scripts, experiments, and technical projects
+
+---
+
+## Technology Stack
+
+### Frontend
+
+- Astro
+- HTML
+- CSS
+- JavaScript / TypeScript
+- Astro Content Collections
+
+### Content
+
+Technical articles are stored as Markdown files inside:
+
+```text
+src/content/articles/
