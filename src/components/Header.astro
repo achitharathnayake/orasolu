@@ -1,0 +1,122 @@
+---
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="site-logo" aria-label="ORASOLU Home">
+      <img src="/branding/orasolu-logo.png" alt="ORASOLU" />
+    </a>
+
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a href="/" class={Astro.url.pathname === "/" ? "active" : ""}>
+        Home
+      </a>
+
+      <a
+        href="/articles/"
+        class={Astro.url.pathname.startsWith("/articles") ? "active" : ""}
+      >
+        Articles
+      </a>
+
+      <a
+        href="/tools/"
+        class={Astro.url.pathname.startsWith("/tools") ? "active" : ""}
+      >
+        Tools
+      </a>
+
+      <a
+        href="/about/"
+        class={Astro.url.pathname.startsWith("/about") ? "active" : ""}
+      >
+        About
+      </a>
+    </nav>
+
+    <div class="header-actions">
+      <button
+        class="icon-button"
+        aria-label="Search"
+        title="Search"
+        type="button"
+      >
+        ⌕
+      </button>
+
+      <button
+        class="icon-button theme-button"
+        aria-label="Toggle theme"
+        title="Toggle theme"
+        type="button"
+      >
+        ☼
+      </button>
+
+      <button
+        class="menu-button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        type="button"
+      >
+        ☰
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .site-logo img {
+    display: block;
+    width: 360px;
+    height: auto;
+  }
+
+  @media (max-width: 1100px) {
+    .site-logo img {
+      width: 300px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .site-logo img {
+      width: 240px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .site-logo img {
+      width: 200px;
+    }
+  }
+</style>
+
+<script>
+  const menuButton =
+    document.querySelector<HTMLButtonElement>(".menu-button");
+
+  const nav =
+    document.querySelector<HTMLElement>(".desktop-nav");
+
+  menuButton?.addEventListener("click", () => {
+    const open =
+      nav?.classList.toggle("nav-open") ?? false;
+
+    menuButton.setAttribute(
+      "aria-expanded",
+      String(open)
+    );
+  });
+
+  document
+    .querySelector(".theme-button")
+    ?.addEventListener("click", () => {
+      document.documentElement.classList.toggle("dark");
+    });
+</script>

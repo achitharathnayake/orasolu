@@ -1,0 +1,22 @@
+---
+interface Props {
+  category: string;
+  title: string;
+  description: string;
+  meta: string;
+  image: string;
+  tag?: string;
+}
+const { category, title, description, meta, image, tag } = Astro.props;
+---
+<article class="article-card">
+  <a class="article-image" href="/articles/">
+    <img src={image} alt="" loading="lazy" />
+  </a>
+  <div class="article-body">
+    <div class="article-kicker">{category}{tag ? ` · ${tag}` : ""}</div>
+    <h3><a href="/articles/">{title}</a></h3>
+    <p>{description}</p>
+    <div class="article-meta">{meta}<span>→</span></div>
+  </div>
+</article>

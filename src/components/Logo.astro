@@ -1,0 +1,48 @@
+---
+interface Props {
+  dark?: boolean;
+  compact?: boolean;
+}
+
+const { dark = false, compact = false } = Astro.props;
+---
+
+<a
+  class:list={["logo", { "logo--dark": dark, "logo--compact": compact }]}
+  href="/"
+  aria-label="ORASOLU home"
+>
+  <img
+    src="/branding/orasolu-logo.png"
+    alt="ORASOLU — Practical Oracle Engineering"
+  />
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .logo img {
+    display: block;
+    width: auto;
+    height: 54px;
+    object-fit: contain;
+  }
+
+  .logo--compact img {
+    height: 50px;
+  }
+
+  @media (max-width: 700px) {
+    .logo img {
+      height: 42px;
+    }
+
+    .logo--compact img {
+      height: 40px;
+    }
+  }
+</style>
