@@ -6,259 +6,256 @@ import ArticleCard from "../components/ArticleCard.astro";
 
 <BaseLayout>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-glow"></div>
+ <!-- HERO -->
+ <section class="hero">
+ <div class="hero-glow"></div>
 
-    <div class="container hero-grid">
-      <div class="hero-copy">
+ <div class="container hero-grid">
+ <div class="hero-copy">
 
-        <div class="eyebrow">
-          DATABASE · CLOUD · AUTOMATION
-        </div>
+ <div class="eyebrow">
+ DATABASE · CLOUD · AUTOMATION
+ </div>
 
-        <h1>
-          Oracle Database<br />
-          <span>Expertise &amp; Solutions</span>
-        </h1>
+ <h1>
+ Oracle Database<br />
+ <span>Expertise &amp; Solutions</span>
+ </h1>
 
-        <p>
-          Practical knowledge across architecture, performance,
-          high availability, migrations, cloud and automation.
-        </p>
+ <p>
+ Practical knowledge across architecture, performance,
+ high availability, migrations, cloud and automation.
+ </p>
 
-        <div class="hero-actions">
-          <a class="button button--primary" href="/articles/">
-            Explore Articles <span>→</span>
-          </a>
+ <div class="hero-actions">
+ <a class="button button--primary" href="/articles/">
+ Explore Articles
+ </a>
 
-          <a class="button button--secondary" href="/tools/">
-            Explore Tools <span>→</span>
-          </a>
-        </div>
+ <a class="button button--secondary" href="/tools/">
+ Explore Tools
+ </a>
+ </div>
 
-      </div>
+ </div>
 
-      <div class="hero-visual"></div>
-    </div>
-  </section>
-
-
-  <!-- ENGINEERING AREAS -->
-  <section class="topic-strip">
-    <div class="container topic-grid">
-
-      {[
-        [
-          "◉",
-          "Oracle Database",
-          "Architecture, administration, SQL, PL/SQL and database internals."
-        ],
-        [
-          "⌁",
-          "Performance",
-          "SQL tuning, AWR, ASH, wait events and diagnostics."
-        ],
-        [
-          "✣",
-          "High Availability",
-          "RAC, Data Guard, MAA and disaster recovery."
-        ],
-        [
-          "→",
-          "Migrations",
-          "Modernization, platform migrations and migration strategies."
-        ],
-        [
-          "⚒",
-          "Cloud & Infrastructure",
-          "OCI, Exadata, ExaCC, Linux and infrastructure."
-        ],
-        [
-          "△",
-          "Automation & DevOps",
-          "Ansible, Terraform, Jenkins, Shell and Python."
-        ]
-      ].map(([icon, title, text]) => (
-        <a class="topic-card" href="/articles/">
-          <span class="topic-icon">{icon}</span>
-
-          <span>
-            <strong>{title}</strong>
-            <small>{text}</small>
-          </span>
-
-          <b>→</b>
-        </a>
-      ))}
-
-    </div>
-  </section>
+ <div class="hero-visual"></div>
+ </div>
+ </section>
 
 
-  <!-- FEATURED ARTICLES -->
-  <section class="section">
-    <div class="container">
+ <!-- ENGINEERING AREAS -->
+ <section class="topic-strip">
+ <div class="container topic-grid">
 
-      <SectionHeader
-        eyebrow="FEATURED ARTICLES"
-        title="Latest from ORASOLU"
-        description="Practical database knowledge, technical guides, scripts and real-world solutions."
-        href="/articles/"
-        linkLabel="View All Articles →"
-      />
+ {[
+ [
+ "◉",
+ "Oracle Database",
+ "Architecture, administration, SQL, PL/SQL and database internals."
+ ],
+ [
+ "⌁",
+ "Performance",
+ "SQL tuning, AWR, ASH, wait events and diagnostics."
+ ],
+ [
+ "✣",
+ "High Availability",
+ "RAC, Data Guard, MAA and disaster recovery."
+ ],
+ [
+ "",
+ "Migrations",
+ "Modernization, platform migrations and migration strategies."
+ ],
+ [
+ "⚒",
+ "Cloud & Infrastructure",
+ "OCI, Exadata, ExaCC, Linux and infrastructure."
+ ],
+ [
+ "△",
+ "Automation & DevOps",
+ "Ansible, Terraform, Jenkins, Shell and Python."
+ ]
+ ].map(([icon, title, text]) => (
+ <a class="topic-card" href="/articles/">
+ <span class="topic-icon">{icon}</span>
 
-      <div class="articles-grid">
+ <span>
+ <strong>{title}</strong>
+ <small>{text}</small>
+ </span>
+ </a>
+ ))}
 
-        <ArticleCard
-          category="PERFORMANCE"
-          tag="19c"
-          title="Understanding Oracle Wait Events"
-          description="A practical guide to understanding Oracle wait events and investigating database performance."
-          meta="12 min read · Sep 20, 2026"
-          image="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80"
-        />
-
-        <ArticleCard
-          category="MIGRATIONS"
-          tag="Cloud"
-          title="Oracle to Cloud Migration Checklist"
-          description="A structured checklist for planning Oracle database migrations and modernization initiatives."
-          meta="16 min read · Sep 15, 2026"
-          image="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80"
-        />
-
-        <ArticleCard
-          category="HIGH AVAILABILITY"
-          tag="Data Guard"
-          title="Data Guard Broker Best Practices"
-          description="Practical configuration and operational considerations for Oracle Data Guard Broker."
-          meta="14 min read · Sep 10, 2026"
-          image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80"
-        />
-
-      </div>
-    </div>
-  </section>
-
-
-  <!-- TOOLBOX + COMMUNITY -->
-  <section class="section section--soft">
-    <div class="container two-column">
-
-      <div>
-
-        <SectionHeader
-          eyebrow="ORASOLU TOOLBOX"
-          title="Tools & Resources"
-          description="Useful scripts, diagnostics, utilities and automation for database and infrastructure work."
-          href="/tools/"
-          linkLabel="View All Tools →"
-        />
-
-        <div class="tool-grid">
-
-          {[
-            "SQL Scripts",
-            "Performance",
-            "RAC",
-            "Data Guard",
-            "RMAN",
-            "Automation"
-          ].map((tool) => (
-            <a href="/tools/" class="tool-card">
-              <span>◈</span>
-              <strong>{tool}</strong>
-              <b>→</b>
-            </a>
-          ))}
-
-        </div>
-
-      </div>
+ </div>
+ </section>
 
 
-      <aside class="community-card">
+ <!-- FEATURED ARTICLES -->
+ <section class="section">
+ <div class="container">
 
-        <div class="eyebrow">
-          ORACLE COMMUNITY
-        </div>
+ <SectionHeader
+ eyebrow="FEATURED ARTICLES"
+ title="Latest from ORASOLU"
+ description="Practical database knowledge, technical guides, scripts and real-world solutions."
+ href="/articles/"
+ linkLabel="View All Articles "
+ />
 
-        <h2>
-          Learn. Connect. Share.
-        </h2>
+ <div class="articles-grid">
 
-        <p>
-          Discover Oracle communities, technical events and resources
-          from the wider Oracle ecosystem.
-        </p>
+ <ArticleCard
+ category="PERFORMANCE"
+ tag="19c"
+ title="Understanding Oracle Wait Events"
+ description="A practical guide to understanding Oracle wait events and investigating database performance."
+ meta="12 min read · Sep 20, 2026"
+ image="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80"
+ />
 
-        <div class="community-actions">
+ <ArticleCard
+ category="MIGRATIONS"
+ tag="Cloud"
+ title="Oracle to Cloud Migration Checklist"
+ description="A structured checklist for planning Oracle database migrations and modernization initiatives."
+ meta="16 min read · Sep 15, 2026"
+ image="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80"
+ />
 
-          <a
-            class="button button--primary"
-            href="https://sloug.org/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Visit SLOUG →
-          </a>
+ <ArticleCard
+ category="HIGH AVAILABILITY"
+ tag="Data Guard"
+ title="Data Guard Broker Best Practices"
+ description="Practical configuration and operational considerations for Oracle Data Guard Broker."
+ meta="14 min read · Sep 10, 2026"
+ image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80"
+ />
 
-          <a
-            class="button button--secondary"
-            href="/about/"
-          >
-            About ORASOLU →
-          </a>
-
-        </div>
-
-      </aside>
-
-    </div>
-  </section>
+ </div>
+ </div>
+ </section>
 
 
-  <!-- TOPICS -->
-  <section class="topics-band">
-    <div class="container">
+ <!-- TOOLBOX + COMMUNITY -->
+ <section class="section section--soft">
+ <div class="container two-column">
 
-      <SectionHeader
-        eyebrow="EXPLORE BY TOPIC"
-        title="Database & Technology Topics"
-        description="Explore content across databases, performance, high availability, migrations, cloud, infrastructure and automation."
-        href="/articles/"
-        linkLabel="View All Articles →"
-      />
+ <div>
 
-      <div class="topic-pills">
+ <SectionHeader
+ eyebrow="ORASOLU TOOLBOX"
+ title="Tools & Resources"
+ description="Useful scripts, diagnostics, utilities and automation for database and infrastructure work."
+ href="/tools/"
+ linkLabel="View All Tools "
+ />
 
-        {[
-          "Oracle Database",
-          "Performance",
-          "RAC",
-          "Data Guard",
-          "Migration",
-          "Exadata",
-          "ExaCC",
-          "PostgreSQL",
-          "MongoDB",
-          "Cloud",
-          "Linux",
-          "DevOps",
-          "Automation",
-          "Security",
-          "Backup & Recovery",
-          "Troubleshooting",
-          "SQL",
-          "PL/SQL"
-        ].map((x) => (
-          <a href="/articles/">{x}</a>
-        ))}
+ <div class="tool-grid">
 
-      </div>
+ {[
+ "SQL Scripts",
+ "Performance",
+ "RAC",
+ "Data Guard",
+ "RMAN",
+ "Automation"
+ ].map((tool) => (
+ <a href="/tools/" class="tool-card">
+ <span>◈</span>
+ <strong>{tool}</strong>
+ </a>
+ ))}
 
-    </div>
-  </section>
+ </div>
+
+ </div>
+
+
+ <aside class="community-card">
+
+ <div class="eyebrow">
+ ORACLE COMMUNITY
+ </div>
+
+ <h2>
+ Learn. Connect. Share.
+ </h2>
+
+ <p>
+ Discover Oracle communities, technical events and resources
+ from the wider Oracle ecosystem.
+ </p>
+
+ <div class="community-actions">
+
+ <a
+ class="button button--primary"
+ href="https://sloug.org/"
+ target="_blank"
+ rel="noreferrer"
+ >
+ Visit SLOUG 
+ </a>
+
+ <a
+ class="button button--secondary"
+ href="/about/"
+ >
+ About ORASOLU 
+ </a>
+
+ </div>
+
+ </aside>
+
+ </div>
+ </section>
+
+
+ <!-- TOPICS -->
+ <section class="topics-band">
+ <div class="container">
+
+ <SectionHeader
+ eyebrow="EXPLORE BY TOPIC"
+ title="Database & Technology Topics"
+ description="Explore content across databases, performance, high availability, migrations, cloud, infrastructure and automation."
+ href="/articles/"
+ linkLabel="View All Articles "
+ />
+
+ <div class="topic-pills">
+
+ {[
+ "Oracle Database",
+ "Performance",
+ "RAC",
+ "Data Guard",
+ "Migration",
+ "Exadata",
+ "ExaCC",
+ "PostgreSQL",
+ "MongoDB",
+ "Cloud",
+ "Linux",
+ "DevOps",
+ "Automation",
+ "Security",
+ "Backup & Recovery",
+ "Troubleshooting",
+ "SQL",
+ "PL/SQL"
+ ].map((x) => (
+ <a href="/articles/">{x}</a>
+ ))}
+
+ </div>
+
+ </div>
+ </section>
 
 </BaseLayout>

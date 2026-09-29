@@ -1,8 +1,9 @@
----
+﻿---
 ---
 
 <header class="site-header">
   <div class="container header-inner">
+
     <a href="/" class="site-logo" aria-label="ORASOLU Home">
       <img src="/branding/orasolu-logo.png" alt="ORASOLU" />
     </a>
@@ -12,36 +13,31 @@
         Home
       </a>
 
-      <a
-        href="/articles/"
-        class={Astro.url.pathname.startsWith("/articles") ? "active" : ""}
-      >
+      <a href="/articles/" class={Astro.url.pathname.startsWith("/articles") ? "active" : ""}>
         Articles
       </a>
 
-      <a
-        href="/tools/"
-        class={Astro.url.pathname.startsWith("/tools") ? "active" : ""}
-      >
+      <a href="/tools/" class={Astro.url.pathname.startsWith("/tools") ? "active" : ""}>
         Tools
       </a>
 
-      <a
-        href="/about/"
-        class={Astro.url.pathname.startsWith("/about") ? "active" : ""}
-      >
+      <a href="/about/" class={Astro.url.pathname.startsWith("/about") ? "active" : ""}>
         About
       </a>
     </nav>
 
     <div class="header-actions">
+
       <button
         class="icon-button"
         aria-label="Search"
         title="Search"
         type="button"
       >
-        ⌕
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="M16 16L21 21"></path>
+        </svg>
       </button>
 
       <button
@@ -50,7 +46,17 @@
         title="Toggle theme"
         type="button"
       >
-        ☼
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2V4"></path>
+          <path d="M12 20V22"></path>
+          <path d="M4.93 4.93L6.34 6.34"></path>
+          <path d="M17.66 17.66L19.07 19.07"></path>
+          <path d="M2 12H4"></path>
+          <path d="M20 12H22"></path>
+          <path d="M4.93 19.07L6.34 17.66"></path>
+          <path d="M17.66 6.34L19.07 4.93"></path>
+        </svg>
       </button>
 
       <button
@@ -59,13 +65,31 @@
         aria-expanded="false"
         type="button"
       >
-        ☰
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
+
     </div>
   </div>
 </header>
 
 <style>
+  .site-header {
+    position: relative;
+    z-index: 50;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .header-inner {
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
   .site-logo {
     display: flex;
     align-items: center;
@@ -74,25 +98,173 @@
 
   .site-logo img {
     display: block;
-    width: 360px;
+    width: 250px;
     height: auto;
+  }
+
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    margin-left: auto;
+  }
+
+  .desktop-nav a {
+    position: relative;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 650;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .desktop-nav a:hover,
+  .desktop-nav a.active {
+    color: var(--orange);
+  }
+
+  .desktop-nav a.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -29px;
+    height: 2px;
+    background: var(--orange);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .icon-button,
+  .menu-button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .icon-button {
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .icon-button:hover {
+    color: var(--orange);
+    border-color: var(--orange);
+    background: var(--soft);
+  }
+
+  .icon-button svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .theme-button svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .menu-button {
+    display: none;
+    width: 38px;
+    height: 38px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .menu-button span {
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
   }
 
   @media (max-width: 1100px) {
     .site-logo img {
-      width: 300px;
+      width: 220px;
+    }
+
+    .desktop-nav {
+      gap: 24px;
     }
   }
 
   @media (max-width: 760px) {
+    .header-inner {
+      min-height: 68px;
+    }
+
     .site-logo img {
-      width: 240px;
+      width: 190px;
+    }
+
+    .desktop-nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 12px 20px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 12px 30px rgba(17, 29, 44, 0.08);
+    }
+
+    .desktop-nav.nav-open {
+      display: flex;
+    }
+
+    .desktop-nav a {
+      padding: 13px 0;
+    }
+
+    .desktop-nav a.active::after {
+      display: none;
+    }
+
+    .menu-button {
+      display: inline-flex;
     }
   }
 
   @media (max-width: 520px) {
     .site-logo img {
-      width: 200px;
+      width: 165px;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+    }
+
+    .header-actions {
+      gap: 6px;
     }
   }
 </style>
@@ -105,8 +277,7 @@
     document.querySelector<HTMLElement>(".desktop-nav");
 
   menuButton?.addEventListener("click", () => {
-    const open =
-      nav?.classList.toggle("nav-open") ?? false;
+    const open = nav?.classList.toggle("nav-open") ?? false;
 
     menuButton.setAttribute(
       "aria-expanded",

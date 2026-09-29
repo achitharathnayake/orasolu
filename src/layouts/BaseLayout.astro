@@ -8,22 +8,32 @@ interface Props {
   description?: string;
 }
 const {
-  title = "ORASOLU — Practical Oracle Engineering",
+  title = "ORASOLU",
   description = "Practical Oracle Database knowledge, DBA practices, performance engineering, migrations, automation and cloud.",
 } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
   <head>
+    <link rel="icon" type="image/png" sizes="32x32" href="/branding/favicon.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/branding/favicon.png" />
+    <link rel="apple-touch-icon" href="/branding/favicon.png" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
-    <link rel="icon" type="image/png" href="/branding/orasolu-icon.png" />
+    
     <title>{title}</title>
-  </head>
+</head>
   <body>
     <Header />
+    <link rel="icon" type="image/png" sizes="32x32" href="/branding/favicon.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/branding/favicon.png" />
+    <link rel="apple-touch-icon" href="/branding/favicon.png" />
     <main><slot /></main>
     <Footer />
   </body>
 </html>
+
+
+
+

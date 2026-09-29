@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --orange: #f45a24;
   --orange2: #ff7a1a;
   --navy: #111d2c;
@@ -252,19 +252,19 @@ img {
 .topic-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 10px;
-  padding: 14px 0;
+  gap: 12px;
+  padding: 16px 0;
 }
 
 .topic-card {
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr) 14px;
   align-items: center;
-  gap: 10px;
-  min-height: 88px;
-  padding: 12px;
+  gap: 11px;
+  min-height: 96px;
+  padding: 15px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 14px;
   background: #fff;
   transition:
     transform .2s ease,
@@ -274,16 +274,16 @@ img {
 
 .topic-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(244, 90, 36, .25);
-  box-shadow: 0 12px 28px rgba(17, 29, 44, .07);
+  border-color: rgba(244, 90, 36, .30);
+  box-shadow: 0 12px 28px rgba(17, 29, 44, .08);
 }
 
 .topic-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: rgba(244, 90, 36, .10);
   color: var(--orange);
@@ -297,19 +297,20 @@ img {
 }
 
 .topic-card strong {
-  margin-bottom: 3px;
-  font-size: 12px;
-  line-height: 1.2;
+  margin-bottom: 5px;
+  font-size: 13px;
+  line-height: 1.25;
 }
 
 .topic-card small {
   color: var(--muted);
-  font-size: 10px;
-  line-height: 1.35;
+  font-size: 11px;
+  line-height: 1.45;
 }
 
 .topic-card b {
   color: var(--muted);
+  font-size: 13px;
 }
 
 
@@ -530,7 +531,7 @@ img {
 
 
 /* =========================================================
-   ABOUT — PERSON
+   ABOUT â€” PERSON
    ========================================================= */
 
 .about-person-section {
@@ -605,7 +606,7 @@ img {
 
 
 /* =========================================================
-   ABOUT — PROFESSIONAL SCOPE
+   ABOUT â€” PROFESSIONAL SCOPE
    ========================================================= */
 
 .section-intro {
@@ -706,7 +707,7 @@ img {
 
 
 /* =========================================================
-   ABOUT — WHY ORASOLU
+   ABOUT â€” WHY ORASOLU
    ========================================================= */
 
 .about-purpose {
@@ -739,7 +740,7 @@ img {
 
 
 /* =========================================================
-   ABOUT — CONNECT
+   ABOUT â€” CONNECT
    ========================================================= */
 
 .about-connect {
