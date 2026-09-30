@@ -1,0 +1,279 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const resources = [
+  {
+    label: "RAC",
+    title: "RAC Instance Status",
+    description:
+      "Queries for reviewing Oracle RAC instances, status, host information and instance-level availability.",
+    href: "/tools/high-availability/rac-instance-status/",
+  },
+  {
+    label: "SERVICES",
+    title: "RAC Services",
+    description:
+      "Review database services, preferred and available instances, and service distribution across the cluster.",
+    href: "/tools/high-availability/rac-services/",
+  },
+  {
+    label: "SESSIONS",
+    title: "RAC Session Distribution",
+    description:
+      "Inspect active sessions across RAC instances and identify where application workload is running.",
+    href: "/tools/high-availability/rac-session-distribution/",
+  },
+  {
+    label: "INTERCONNECT",
+    title: "RAC Interconnect",
+    description:
+      "Useful queries for reviewing RAC interconnect-related statistics and global cache activity.",
+    href: "/tools/high-availability/rac-interconnect/",
+  },
+  {
+    label: "DATA GUARD",
+    title: "Data Guard Status",
+    description:
+      "Queries for checking standby status, transport, apply activity and protection-related information.",
+    href: "/tools/high-availability/data-guard-status/",
+  },
+  {
+    label: "DATA GUARD",
+    title: "Data Guard Configuration",
+    description:
+      "Review primary and standby database configuration, destinations and key Data Guard properties.",
+    href: "/tools/high-availability/data-guard-configuration/",
+  },
+];
+---
+
+<BaseLayout
+  title="High Availability"
+  description="Practical Oracle high availability queries and resources for RAC, services, interconnect activity and Data Guard."
+>
+  <section class="category-hero">
+    <div class="container">
+      <p class="eyebrow">ORASOLU TOOLBOX · HIGH AVAILABILITY</p>
+      <h1>High Availability &amp; <span>Resilience</span></h1>
+      <p>
+        Practical Oracle high availability queries and operational resources
+        for RAC, services, interconnect activity and Data Guard.
+      </p>
+    </div>
+  </section>
+
+  <section class="category-section">
+    <div class="container">
+      <div class="category-intro">
+        <p class="eyebrow">ORASOLU TOOLBOX · HIGH AVAILABILITY</p>
+        <h2>Practical resources for highly available Oracle environments</h2>
+        <p>
+          A collection of reusable queries for reviewing cluster health,
+          workload distribution, RAC services, interconnect activity and
+          Data Guard status.
+        </p>
+      </div>
+
+      <div class="resource-grid">
+        {
+          resources.map((resource) => (
+            <a class="resource-card" href={resource.href}>
+              <div class="resource-card__label">{resource.label}</div>
+              <h3>{resource.title}</h3>
+              <p>{resource.description}</p>
+              <span class="resource-card__action">Explore</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="category-closing">
+    <div class="container">
+      <p class="eyebrow">ORASOLU TOOLBOX · HIGH AVAILABILITY</p>
+      <h2>More high availability resources will be added over time.</h2>
+      <p>
+        The high availability toolbox will grow with reusable Oracle RAC,
+        Data Guard, service management and operational resources developed
+        from real-world database work.
+      </p>
+
+      <a class="button button--primary" href="/tools/">
+        Back to Tools
+      </a>
+    </div>
+  </section>
+
+  <style>
+    .category-hero {
+      padding-top: 82px;
+      padding-bottom: 72px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .category-hero h1 {
+      margin: 0 0 14px;
+      color: var(--ink);
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .category-hero h1 span {
+      color: var(--orange);
+    }
+
+    .category-hero > .container > p:last-child {
+      max-width: 900px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    .category-section {
+      padding-top: 72px;
+      padding-bottom: 72px;
+    }
+
+    .category-intro {
+      max-width: 820px;
+      margin-bottom: 42px;
+    }
+
+    .category-intro h2 {
+      margin: 0 0 14px;
+      color: var(--ink);
+      font-size: clamp(28px, 3vw, 38px);
+      line-height: 1.15;
+    }
+
+    .category-intro > p:last-child {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .resource-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 236px;
+      padding: 30px;
+      box-sizing: border-box;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      color: inherit;
+      text-decoration: none;
+      transition:
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        transform 0.22s ease;
+    }
+
+    .resource-card:hover {
+      border-color: var(--orange);
+      box-shadow: 0 10px 24px rgba(17, 29, 44, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .resource-card__label {
+      margin-bottom: 12px;
+      color: var(--orange);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      line-height: 1.2;
+    }
+
+    .resource-card h3 {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: 21px;
+      line-height: 1.3;
+    }
+
+    .resource-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .resource-card__action {
+      margin-top: auto;
+      padding-top: 24px;
+      color: var(--orange);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .category-closing {
+      padding-top: 88px;
+      padding-bottom: 88px;
+      background: #f7f8fa;
+    }
+
+    .category-closing h2 {
+      max-width: 820px;
+      margin: 0 0 14px;
+      color: var(--ink);
+      font-size: clamp(30px, 4vw, 42px);
+      line-height: 1.15;
+    }
+
+    .category-closing p:not(.eyebrow) {
+      max-width: 820px;
+      margin: 0 0 30px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    @media (max-width: 900px) {
+      .resource-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      .category-hero {
+        padding-top: 58px;
+        padding-bottom: 54px;
+      }
+
+      .category-hero h1 {
+        font-size: clamp(38px, 12vw, 54px);
+      }
+
+      .category-section {
+        padding-top: 56px;
+        padding-bottom: 56px;
+      }
+
+      .resource-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .resource-card {
+        min-height: 220px;
+        padding: 22px;
+        border-radius: 16px;
+      }
+
+      .category-closing {
+        padding-top: 64px;
+        padding-bottom: 64px;
+      }
+    }
+  </style>
+</BaseLayout>

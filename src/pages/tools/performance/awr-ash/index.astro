@@ -1,0 +1,489 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="AWR & ASH"
+  description="Practical Oracle SQL for investigating historical workload with AWR and Active Session History."
+>
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="eyebrow">ORASOLU TOOLBOX · PERFORMANCE</div>
+        <h1>AWR &amp; ASH</h1>
+        <p>
+          Practical Oracle SQL for investigating historical workload,
+          SQL performance, wait activity and active sessions.
+        </p>
+      </div>
+    </section>
+
+    <section class="resource-section">
+      <div class="container">
+        <div class="resource-intro">
+          <div class="eyebrow">ORASOLU TOOLBOX · PERFORMANCE</div>
+          <h2>Use historical data to understand when and where performance changed</h2>
+          <p>
+            Start with AWR for interval-based workload and SQL statistics, then
+            use ASH to examine sampled session activity, SQL execution and wait
+            events around the period being investigated.
+          </p>
+        </div>
+
+        <div class="resource-grid">
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">01 · TOP SQL</div>
+              <h2>Find top SQL by elapsed time</h2>
+            </div>
+            <p class="resource-block__description">
+              Review SQL statements with the highest elapsed-time consumption
+              during a selected AWR interval.
+            </p>
+            <pre><code>SELECT
+    ss.sql_id,
+    ss.plan_hash_value,
+    sn.begin_interval_time,
+    sn.end_interval_time,
+    ss.executions_delta,
+    ROUND(ss.elapsed_time_delta / 1000000, 2)
+        AS elapsed_seconds,
+    ROUND(
+        CASE
+            WHEN ss.executions_delta &gt; 0
+            THEN ss.elapsed_time_delta / ss.executions_delta / 1000
+        END,
+        2
+    ) AS avg_elapsed_ms
+FROM dba_hist_sqlstat ss
+JOIN dba_hist_snapshot sn
+    ON sn.snap_id = ss.snap_id
+   AND sn.dbid = ss.dbid
+   AND sn.instance_number = ss.instance_number
+WHERE sn.begin_interval_time &gt;= SYSDATE - 7
+ORDER BY ss.elapsed_time_delta DESC
+FETCH FIRST 20 ROWS ONLY;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">02 · SQL STATISTICS</div>
+              <h2>Compare SQL activity between snapshots</h2>
+            </div>
+            <p class="resource-block__description">
+              Inspect interval-level executions, CPU, logical reads and physical
+              reads for a specific SQL statement.
+            </p>
+            <pre><code>SELECT
+    ss.snap_id,
+    sn.begin_interval_time,
+    sn.end_interval_time,
+    ss.sql_id,
+    ss.plan_hash_value,
+    ss.executions_delta,
+    ROUND(ss.elapsed_time_delta / 1000000, 2)
+        AS elapsed_seconds,
+    ROUND(ss.cpu_time_delta / 1000000, 2)
+        AS cpu_seconds,
+    ss.buffer_gets_delta,
+    ss.disk_reads_delta
+FROM dba_hist_sqlstat ss
+JOIN dba_hist_snapshot sn
+    ON sn.snap_id = ss.snap_id
+   AND sn.dbid = ss.dbid
+   AND sn.instance_number = ss.instance_number
+WHERE ss.sql_id = '&amp;sql_id'
+ORDER BY ss.snap_id DESC;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">03 · AWR WAIT EVENTS</div>
+              <h2>Find historical wait activity</h2>
+            </div>
+            <p class="resource-block__description">
+              Review interval changes in non-idle wait activity and identify
+              events that accumulated significant wait time.
+            </p>
+            <pre><code>SELECT
+    se.event_name,
+    se.wait_class,
+    SUM(se.total_waits) AS total_waits,
+    ROUND(SUM(se.time_waited_micro) / 1000000, 2)
+        AS wait_seconds
+FROM dba_hist_system_event se
+JOIN dba_hist_snapshot sn
+    ON sn.snap_id = se.snap_id
+   AND sn.dbid = se.dbid
+   AND sn.instance_number = se.instance_number
+WHERE sn.begin_interval_time &gt;= SYSDATE - 7
+  AND se.wait_class &lt;&gt; 'Idle'
+GROUP BY
+    se.event_name,
+    se.wait_class
+ORDER BY wait_seconds DESC
+FETCH FIRST 20 ROWS ONLY;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">04 · ASH SESSIONS</div>
+              <h2>Review active session history</h2>
+            </div>
+            <p class="resource-block__description">
+              Identify sessions repeatedly sampled as active and review their
+              SQL, session state and wait information.
+            </p>
+            <pre><code>SELECT
+    session_id,
+    session_serial#,
+    sql_id,
+    session_state,
+    event,
+    wait_class,
+    COUNT(*) AS samples
+FROM v$active_session_history
+WHERE sample_time &gt;= SYSTIMESTAMP - INTERVAL '1' HOUR
+GROUP BY
+    session_id,
+    session_serial#,
+    sql_id,
+    session_state,
+    event,
+    wait_class
+ORDER BY samples DESC
+FETCH FIRST 20 ROWS ONLY;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">05 · ASH SQL ACTIVITY</div>
+              <h2>Find SQL with repeated ASH samples</h2>
+            </div>
+            <p class="resource-block__description">
+              Group ASH samples by SQL identifier to see which statements were
+              repeatedly active during a selected period.
+            </p>
+            <pre><code>SELECT
+    sql_id,
+    session_state,
+    wait_class,
+    COUNT(*) AS samples,
+    MIN(sample_time) AS first_sample,
+    MAX(sample_time) AS last_sample
+FROM v$active_session_history
+WHERE sample_time &gt;= SYSTIMESTAMP - INTERVAL '1' HOUR
+  AND sql_id IS NOT NULL
+GROUP BY
+    sql_id,
+    session_state,
+    wait_class
+ORDER BY samples DESC
+FETCH FIRST 20 ROWS ONLY;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">06 · ASH WAITS</div>
+              <h2>Investigate wait events with ASH</h2>
+            </div>
+            <p class="resource-block__description">
+              Summarize sampled wait events and correlate them with SQL to
+              understand where active database time was spent.
+            </p>
+            <pre><code>SELECT
+    event,
+    wait_class,
+    sql_id,
+    COUNT(*) AS samples,
+    MIN(sample_time) AS first_sample,
+    MAX(sample_time) AS last_sample
+FROM v$active_session_history
+WHERE sample_time &gt;= SYSTIMESTAMP - INTERVAL '1' HOUR
+  AND session_state = 'WAITING'
+  AND wait_class &lt;&gt; 'Idle'
+GROUP BY
+    event,
+    wait_class,
+    sql_id
+ORDER BY samples DESC
+FETCH FIRST 20 ROWS ONLY;</code></pre>
+          </article>
+        </div>
+
+        <div class="resource-note">
+          <div class="resource-note__label">ORASOLU TOOLBOX · PERFORMANCE</div>
+          <h3>AWR shows interval-level history; ASH adds sampled session detail.</h3>
+          <p>
+            Use AWR to establish when workload or wait statistics changed, then
+            use ASH to examine the sessions, SQL and wait events active around
+            that period. Historical views require the appropriate Oracle
+            licensing and privileges in the target environment.
+          </p>
+        </div>
+
+        <div class="resource-actions">
+          <a class="button button--primary" href="/tools/performance/">
+            Back to Performance
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll(".resource-block pre").forEach((pre) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "resource-copy-button";
+    button.textContent = "Copy";
+    button.setAttribute("aria-label", "Copy SQL");
+
+    pre.style.position = "relative";
+
+    button.style.position = "absolute";
+    button.style.top = "10px";
+    button.style.right = "10px";
+    button.style.padding = "5px 9px";
+    button.style.border = "1px solid #d1d5db";
+    button.style.borderRadius = "5px";
+    button.style.background = "#ffffff";
+    button.style.color = "#374151";
+    button.style.fontFamily = "inherit";
+    button.style.fontSize = "0.75rem";
+    button.style.cursor = "pointer";
+    button.style.zIndex = "2";
+
+    button.addEventListener("click", async () => {
+      const code = pre.querySelector("code");
+      if (!code) return;
+
+      try {
+        await navigator.clipboard.writeText(code.textContent || "");
+        button.textContent = "Copied";
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      } catch {
+        button.textContent = "Copy failed";
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      }
+    });
+
+    pre.appendChild(button);
+  });
+</script>
+
+<style>
+.resource-section {
+  padding-top: 56px;
+  padding-bottom: 72px;
+}
+
+.resource-intro {
+  max-width: 820px;
+  margin-bottom: 32px;
+}
+
+.resource-intro h2 {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.15;
+}
+
+.resource-intro p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  align-items: start;
+}
+
+.resource-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 560px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 30px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+
+.resource-block:hover {
+  border-color: #d8dce1;
+  box-shadow: 0 12px 30px rgba(17, 29, 44, 0.06);
+  transform: translateY(-3px);
+}
+
+.resource-block__header {
+  margin-bottom: 10px;
+}
+
+.resource-block__label {
+  margin-bottom: 9px;
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+}
+
+.resource-block h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.resource-block__description {
+  min-height: 48px;
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.resource-block pre {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 22px;
+  overflow-x: auto;
+  overflow-y: auto;
+  background: #2f353d;
+  border-radius: 10px;
+  color: #f3f4f6;
+  font-family:
+    "Cascadia Code",
+    "Consolas",
+    "Courier New",
+    monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre;
+}
+
+.resource-block code {
+  font-family: inherit;
+  white-space: pre;
+}
+
+.resource-copy-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 9px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #374151;
+  font-family: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.resource-copy-button:hover {
+  background: #f3f4f6;
+}
+
+.resource-note {
+  margin-top: 32px;
+  padding: 30px;
+  background: #f7f8fa;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.resource-note__label {
+  margin-bottom: 10px;
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.resource-note h3 {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.resource-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.resource-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+@media (max-width: 820px) {
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .resource-section {
+    padding-top: 52px;
+    padding-bottom: 64px;
+  }
+
+  .resource-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .resource-block {
+    height: 520px;
+    padding: 22px;
+    border-radius: 16px;
+  }
+
+  .resource-block__description {
+    min-height: 0;
+  }
+
+  .resource-block pre {
+    padding: 18px;
+    font-size: 12px;
+  }
+
+  .resource-note {
+    padding: 22px;
+    border-radius: 16px;
+  }
+
+  .resource-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+}
+</style>

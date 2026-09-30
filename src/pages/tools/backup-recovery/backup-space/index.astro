@@ -1,0 +1,470 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Backup Space"
+  description="Practical Oracle SQL for reviewing recovery area capacity, backup storage usage, archived redo volume and backup space trends."
+>
+  <main>
+    <section class="resource-hero">
+      <div class="container">
+        <p class="eyebrow">ORASOLU TOOLBOX · BACKUP &amp; RECOVERY</p>
+        <h1>Backup <span class="hero-accent">Space</span></h1>
+        <p>
+          Practical Oracle SQL for reviewing recovery area capacity, backup storage
+          usage, archived redo volume and backup space trends.
+        </p>
+      </div>
+    </section>
+
+    <section class="resource-section">
+      <div class="container">
+        <div class="resource-intro">
+          <p class="eyebrow">ORASOLU TOOLBOX · BACKUP &amp; RECOVERY</p>
+          <h2>Measure backup space before it becomes a recovery problem</h2>
+          <p>
+            Backup investigations should show how much recovery area is configured,
+            which file types consume space, how large RMAN backups are and how
+            archived redo contributes to storage growth. These queries provide a
+            practical starting point for reviewing backup space.
+          </p>
+        </div>
+
+        <div class="resource-grid">
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <p class="resource-block__label">01 · RECOVERY AREA</p>
+              <h2>Review recovery area capacity</h2>
+            </div>
+            <p class="resource-block__description">
+              Review configured recovery area space, current usage, reclaimable
+              space and the number of files stored in the destination.
+            </p>
+            <pre><code>SELECT
+    name,
+    space_limit / 1024 / 1024 / 1024 AS limit_gb,
+    space_used / 1024 / 1024 / 1024 AS used_gb,
+    space_reclaimable / 1024 / 1024 / 1024 AS reclaimable_gb,
+    number_of_files
+FROM v$recovery_file_dest;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <p class="resource-block__label">02 · SPACE BY TYPE</p>
+              <h2>Find recovery area space consumers</h2>
+            </div>
+            <p class="resource-block__description">
+              Break down recovery area usage by file type to identify where the
+              available space is being consumed.
+            </p>
+            <pre><code>SELECT
+    file_type,
+    percent_space_used,
+    percent_space_reclaimable,
+    number_of_files
+FROM v$recovery_area_usage
+ORDER BY percent_space_used DESC;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <p class="resource-block__label">03 · BACKUP PIECES</p>
+              <h2>Review RMAN backup piece space</h2>
+            </div>
+            <p class="resource-block__description">
+              Review RMAN backup piece sizes and completion times to identify
+              large backup files and recent storage consumption.
+            </p>
+            <pre><code>SELECT
+    completion_time,
+    handle,
+    bytes / 1024 / 1024 / 1024 AS size_gb,
+    status
+FROM v$backup_piece
+WHERE deleted = 'NO'
+ORDER BY completion_time DESC;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <p class="resource-block__label">04 · BACKUP SETS</p>
+              <h2>Measure backup set size</h2>
+            </div>
+            <p class="resource-block__description">
+              Review backup set sizes by completion time to understand how much
+              storage individual RMAN backup sets require.
+            </p>
+            <pre><code>SELECT
+    completion_time,
+    backup_type,
+    incremental_level,
+    backup_size / 1024 / 1024 / 1024 AS size_gb
+FROM v$backup_set
+ORDER BY completion_time DESC;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <p class="resource-block__label">05 · ARCHIVED REDO</p>
+              <h2>Measure archived redo volume</h2>
+            </div>
+            <p class="resource-block__description">
+              Summarize archived redo volume by day to identify periods of high
+              redo generation that can increase backup storage requirements.
+            </p>
+            <pre><code>SELECT
+    TRUNC(completion_time) AS archive_day,
+    ROUND(
+        SUM(blocks * block_size) / 1024 / 1024 / 1024,
+        2
+    ) AS archived_redo_gb
+FROM v$archived_log
+WHERE completion_time IS NOT NULL
+GROUP BY TRUNC(completion_time)
+ORDER BY archive_day DESC;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <p class="resource-block__label">06 · DAILY BACKUP GROWTH</p>
+              <h2>Track recent backup growth</h2>
+            </div>
+            <p class="resource-block__description">
+              Summarize recent RMAN backup piece volume by day to identify
+              changes in backup storage requirements.
+            </p>
+            <pre><code>SELECT
+    TRUNC(completion_time) AS backup_day,
+    ROUND(
+        SUM(bytes) / 1024 / 1024 / 1024,
+        2
+    ) AS backup_gb
+FROM v$backup_piece
+WHERE deleted = 'NO'
+  AND status = 'A'
+  AND completion_time &gt;= SYSDATE - 30
+GROUP BY TRUNC(completion_time)
+ORDER BY backup_day DESC;</code></pre>
+          </article>
+        </div>
+
+        <div class="resource-note">
+          <p class="eyebrow">ORASOLU TOOLBOX · BACKUP &amp; RECOVERY</p>
+          <h2>Backup space should be measured as a storage lifecycle.</h2>
+          <p>
+            Recovery area capacity, RMAN backup pieces, backup sets and archived
+            redo all contribute to the storage picture. Reviewing them together
+            helps identify growth patterns before space pressure affects backup
+            or recovery operations.
+          </p>
+          <p>
+            These queries use Oracle dynamic performance views including
+            <code>V$RECOVERY_FILE_DEST</code>,
+            <code>V$RECOVERY_AREA_USAGE</code>,
+            <code>V$BACKUP_PIECE</code>,
+            <code>V$BACKUP_SET</code> and
+            <code>V$ARCHIVED_LOG</code>.
+          </p>
+        </div>
+
+        <div class="resource-actions">
+          <a class="button button--primary" href="/tools/backup-recovery/">
+            Back to Backup &amp; Recovery
+          </a>
+          <a class="resource-actions__link" href="/tools/backup-recovery/recovery-diagnostics/">
+            Read Recovery Diagnostics
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+.resource-hero {
+  padding-top: 82px;
+  padding-bottom: 72px;
+  border-bottom: 1px solid var(--line);
+}
+.resource-hero h1 {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: clamp(42px, 6vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+.resource-hero .hero-accent {
+  color: var(--orange);
+}
+.resource-hero > .container > p:last-child {
+  max-width: 900px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.75;
+}
+.resource-section {
+  padding-top: 56px;
+  padding-bottom: 72px;
+}
+.resource-intro {
+  max-width: 820px;
+  margin-bottom: 32px;
+}
+.resource-intro .eyebrow {
+  margin: 0 0 14px;
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+}
+.resource-intro h2 {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.15;
+}
+.resource-intro p:not(.eyebrow) {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.75;
+}
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  align-items: start;
+}
+.resource-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 560px;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin: 0;
+  padding: 30px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+.resource-block:hover {
+  border-color: #d8dce1;
+  box-shadow: 0 12px 30px rgba(17, 29, 44, 0.06);
+  transform: translateY(-3px);
+}
+.resource-block__header {
+  margin-bottom: 10px;
+}
+.resource-block__label {
+  margin-bottom: 9px;
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+}
+.resource-block h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.3;
+}
+.resource-block__description {
+  min-height: 48px;
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.resource-block pre {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 22px;
+  overflow-x: auto;
+  overflow-y: auto;
+  white-space: pre;
+  background: #2f353d;
+  border-radius: 10px;
+  color: #f3f4f6;
+  font-family:
+    "Cascadia Code",
+    "Consolas",
+    "Courier New",
+    monospace;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.resource-block code {
+  font-family: inherit;
+  white-space: pre;
+}
+.resource-copy-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 9px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #374151;
+  font-family: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  z-index: 2;
+}
+.resource-copy-button:hover {
+  background: #f3f4f6;
+}
+.resource-note {
+  max-width: 820px;
+  margin-top: 56px;
+  padding: 30px;
+  box-sizing: border-box;
+  background: #f7f8fa;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.75;
+}
+.resource-note .eyebrow {
+  margin: 0 0 14px;
+}
+.resource-note h2 {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.15;
+}
+.resource-note p:not(.eyebrow) {
+  margin: 0 0 14px;
+}
+.resource-note p:last-child {
+  margin-bottom: 0;
+}
+.resource-note code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: #eef0f2;
+  color: var(--ink);
+  font-family:
+    "Cascadia Code",
+    "Consolas",
+    "Courier New",
+    monospace;
+  font-size: 0.92em;
+}
+.resource-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  justify-content: flex-start;
+  margin-top: 32px;
+}
+.resource-actions__link {
+  color: var(--orange);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.resource-actions__link:hover {
+  text-decoration: underline;
+}
+@media (max-width: 820px) {
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 680px) {
+  .resource-hero {
+    padding-top: 58px;
+    padding-bottom: 54px;
+  }
+  .resource-hero h1 {
+    font-size: clamp(38px, 12vw, 54px);
+  }
+  .resource-section {
+    padding-top: 42px;
+    padding-bottom: 56px;
+  }
+  .resource-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .resource-block {
+    height: 520px;
+    padding: 22px;
+    border-radius: 16px;
+  }
+  .resource-block__description {
+    min-height: 0;
+  }
+  .resource-block pre {
+    padding: 18px;
+    font-size: 12px;
+  }
+  .resource-note {
+    padding: 22px;
+    border-radius: 16px;
+  }
+  .resource-actions {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
+</style>
+
+<script>
+  document.querySelectorAll(".resource-block pre").forEach((pre) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "resource-copy-button";
+    button.textContent = "Copy";
+    button.setAttribute("aria-label", "Copy SQL");
+
+    pre.style.position = "relative";
+    button.style.position = "absolute";
+    button.style.top = "10px";
+    button.style.right = "10px";
+    button.style.padding = "5px 9px";
+    button.style.border = "1px solid #d1d5db";
+    button.style.borderRadius = "5px";
+    button.style.background = "#ffffff";
+    button.style.color = "#374151";
+    button.style.fontFamily = "inherit";
+    button.style.fontSize = "0.75rem";
+    button.style.cursor = "pointer";
+    button.style.zIndex = "2";
+
+    button.addEventListener("click", async () => {
+      const code = pre.querySelector("code");
+      if (!code) return;
+
+      try {
+        await navigator.clipboard.writeText(code.textContent || "");
+        button.textContent = "Copied";
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      } catch {
+        button.textContent = "Copy failed";
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      }
+    });
+
+    pre.appendChild(button);
+  });
+</script>
