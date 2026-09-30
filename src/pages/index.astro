@@ -2,6 +2,37 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import ArticleCard from "../components/ArticleCard.astro";
+import { getCollection } from "astro:content";
+
+const articles = await getCollection("articles", ({ data }) => !data.draft);
+const latestArticles = [...articles]
+  .sort((a, b) => b.data.publishedDate.getTime() - a.data.publishedDate.getTime())
+  .slice(0, 3);
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+const getReadingTime = (body: string | undefined) =>
+  Math.max(
+    1,
+    Math.ceil(
+      (body ? body.replace(/\s+/g, " ").trim().split(/\s+/).length : 0) / 200
+    )
+  );
+
+const categoryImages: Record<string, string> = {
+  "Performance": "/images/article-bg/performance.png",
+  "High Availability": "/images/article-bg/high-availability.png",
+  "Backup & Recovery": "/images/article-bg/backup-and-recovery.png",
+  "Storage & Capacity": "/images/article-bg/storage-and-capacity.png",
+  "Migration": "/images/article-bg/migration.png",
+  "Automation & DevOps": "/images/article-bg/automation-and-devops.png",
+  "SQL & Database": "/images/article-bg/sql-and-database.png",
+};
 ---
 
 <BaseLayout>
@@ -108,34 +139,34 @@ import ArticleCard from "../components/ArticleCard.astro";
 
  <div class="articles-grid">
 
- <ArticleCard
- category="PERFORMANCE"
- tag="19c"
- title="Understanding Oracle Wait Events"
- description="A practical guide to understanding Oracle wait events and investigating database performance."
- meta="12 min read · Sep 20, 2026"
- image="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80"
- />
+{latestArticles.map((article) => {
+ const image =
+ article.data.image ||
+ categoryImages[article.data.category] ||
+ "/images/article-bg/sql-and-database.png";
 
- <ArticleCard
- category="MIGRATIONS"
- tag="Cloud"
- title="Oracle to Cloud Migration Checklist"
- description="A structured checklist for planning Oracle database migrations and modernization initiatives."
- meta="16 min read · Sep 15, 2026"
- image="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80"
- />
+ const tag = "Oracle Database";
 
- <ArticleCard
- category="HIGH AVAILABILITY"
- tag="Data Guard"
- title="Data Guard Broker Best Practices"
- description="Practical configuration and operational considerations for Oracle Data Guard Broker."
- meta="14 min read · Sep 10, 2026"
- image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80"
- />
+ const href =
+ `/articles/${article.id.replace(/\.md$/, "")}/`;
 
- </div>
+ const meta =
+ `${getReadingTime(article.body)} min read · ${formatDate(article.data.publishedDate)}`;
+
+ return (
+ <ArticleCard
+ category={article.data.category.toUpperCase()}
+ tag={tag}
+ title={article.data.title}
+ description={article.data.description}
+ meta={meta}
+ image={image}
+ href={href}
+ />
+ );
+})}
+
+</div>
  </div>
  </section>
 

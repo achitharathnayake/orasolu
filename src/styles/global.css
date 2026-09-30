@@ -343,6 +343,58 @@ img {
 }
 
 
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 28px;
+}
+
+.section-header > div {
+  min-width: 0;
+}
+
+.section-header .eyebrow {
+  margin-bottom: 10px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: clamp(32px, 4vw, 46px);
+  line-height: 1.05;
+  letter-spacing: -.035em;
+}
+
+.section-header p {
+  max-width: 680px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.section-link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  background: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: border-color .2s ease, background .2s ease, color .2s ease;
+}
+
+.section-link:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+  background: rgba(244, 90, 36, .05);
+}
 /* =========================================================
    ARTICLE GRID
    ========================================================= */
@@ -1112,5 +1164,26 @@ img {
 
   .article-navigation__link--next {
     text-align: left;
+  }
+}
+
+@media (max-width: 720px) {
+  .section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+
+  .section-header h2 {
+    font-size: 32px;
+  }
+
+  .section-header p {
+    margin-top: 10px;
+  }
+
+  .section-link {
+    min-height: 40px;
   }
 }
