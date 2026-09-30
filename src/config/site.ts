@@ -12,7 +12,6 @@ export const site = {
     { label: "About", href: "/about/" },
   ],
   links: {
-    github: "https://github.com/achitharathnayake/orasolu",
     sloug: "https://sloug.org/",
     youtube: "#",
     linkedin: "#",
