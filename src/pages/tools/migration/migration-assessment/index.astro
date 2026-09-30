@@ -1,0 +1,442 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Migration Assessment"
+  description="Practical Oracle SQL for assessing database size, schemas, objects, invalid objects, options and dependencies before migration."
+>
+  <main>
+    <section class="resource-hero">
+      <div class="container">
+        <p class="eyebrow">ORASOLU TOOLBOX · MIGRATION</p>
+        <h1>Migration <span class="hero-accent">Assessment</span></h1>
+        <p>
+          Practical Oracle SQL for reviewing database footprint, schemas, objects,
+          invalid objects, installed options and dependencies before a migration.
+        </p>
+      </div>
+    </section>
+
+    <section class="resource-section">
+      <div class="container">
+        <div class="resource-intro">
+          <p class="eyebrow">ORASOLU TOOLBOX · MIGRATION</p>
+          <h2>Understand the source before choosing the migration path</h2>
+          <p>
+            A migration assessment should establish what is in the source database,
+            how large it is, which objects require attention and which dependencies
+            or database features may affect the migration method. These queries provide
+            a practical starting point for that assessment.
+          </p>
+        </div>
+
+        <div class="resource-grid">
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">01 · DATABASE SIZE</div>
+              <h2>Measure database storage</h2>
+            </div>
+            <p class="resource-block__description">
+              Review allocated datafile space to establish the source database footprint.
+            </p>
+            <pre><code>SELECT
+  ROUND(SUM(bytes) / 1024 / 1024 / 1024, 2) AS allocated_gb,
+  COUNT(*) AS datafiles
+FROM dba_data_files;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">02 · SCHEMAS</div>
+              <h2>Review database schemas</h2>
+            </div>
+            <p class="resource-block__description">
+              Identify schemas and account status before planning users, ownership and migration scope.
+            </p>
+            <pre><code>SELECT
+  username,
+  account_status,
+  default_tablespace,
+  temporary_tablespace,
+  created
+FROM dba_users
+ORDER BY username;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">03 · OBJECTS</div>
+              <h2>Profile database objects</h2>
+            </div>
+            <p class="resource-block__description">
+              Count objects by schema and type to understand application and metadata complexity.
+            </p>
+            <pre><code>SELECT
+  owner,
+  object_type,
+  COUNT(*) AS object_count
+FROM dba_objects
+GROUP BY owner, object_type
+ORDER BY owner, object_type;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">04 · VALIDATION</div>
+              <h2>Find invalid objects</h2>
+            </div>
+            <p class="resource-block__description">
+              Identify invalid database objects that should be understood before or after the move.
+            </p>
+            <pre><code>SELECT
+  owner,
+  object_type,
+  object_name,
+  status
+FROM dba_objects
+WHERE status &lt;&gt; 'VALID'
+ORDER BY owner, object_type, object_name;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">05 · OPTIONS</div>
+              <h2>Review database options</h2>
+            </div>
+            <p class="resource-block__description">
+              Review enabled database options that may influence migration planning and target requirements.
+            </p>
+            <pre><code>SELECT
+  parameter,
+  value
+FROM v$option
+ORDER BY parameter;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">06 · DEPENDENCIES</div>
+              <h2>Inspect object dependencies</h2>
+            </div>
+            <p class="resource-block__description">
+              Review object relationships that can help identify migration ordering and validation requirements.
+            </p>
+            <pre><code>SELECT
+  owner,
+  name,
+  type,
+  referenced_owner,
+  referenced_name,
+  referenced_type
+FROM dba_dependencies
+ORDER BY owner, name, referenced_owner, referenced_name;</code></pre>
+          </article>
+        </div>
+
+        <div class="resource-note">
+          <p class="eyebrow">ORASOLU TOOLBOX · MIGRATION</p>
+          <h2>Migration planning starts with a source inventory.</h2>
+          <p>
+            Database size, schemas, objects, invalid objects, enabled options and
+            dependencies provide the baseline for deciding what needs to move and
+            what needs additional validation.
+          </p>
+          <p>
+            Use these queries as an assessment starting point and correlate the results
+            with the migration method, target architecture and application requirements.
+          </p>
+        </div>
+
+        <div class="resource-actions">
+          <a class="button button--primary" href="/tools/migration/">Back to Migration</a>
+          <a class="resource-actions__link" href="/tools/migration/data-pump/">Read Data Pump</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .resource-hero {
+    padding-top: 72px;
+    padding-bottom: 72px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .resource-hero h1 {
+    margin: 0 0 14px;
+    color: var(--ink);
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+  }
+
+  .resource-hero .hero-accent {
+    color: var(--orange);
+  }
+
+  .resource-hero > .container > p:last-child {
+    max-width: 900px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+  .resource-section {
+    padding-top: 56px;
+    padding-bottom: 72px;
+  }
+
+  .resource-intro {
+    max-width: 820px;
+    margin-bottom: 32px;
+  }
+
+  .resource-intro .eyebrow {
+    margin: 0 0 14px;
+    color: var(--orange);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    line-height: 1.2;
+  }
+
+  .resource-intro h2 {
+    margin: 0 0 14px;
+    color: var(--ink);
+    font-size: clamp(28px, 3vw, 38px);
+    line-height: 1.15;
+  }
+
+  .resource-intro p:not(.eyebrow) {
+    margin: 0;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    align-items: start;
+  }
+
+  .resource-block {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: 560px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    transition:
+      border-color 0.22s ease,
+      box-shadow 0.22s ease,
+      transform 0.22s ease;
+  }
+
+  .resource-block:hover {
+    border-color: #d8dce1;
+    box-shadow: 0 12px 30px rgba(17, 29, 44, 0.06);
+    transform: translateY(-3px);
+  }
+
+  .resource-block__header {
+    margin-bottom: 10px;
+  }
+
+  .resource-block__label {
+    margin-bottom: 9px;
+    color: var(--orange);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    line-height: 1.2;
+  }
+
+  .resource-block h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 22px;
+    line-height: 1.3;
+  }
+
+  .resource-block__description {
+    min-height: 48px;
+    margin: 0 0 22px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .resource-block pre {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+    padding: 22px;
+    overflow-x: auto;
+    overflow-y: auto;
+    white-space: pre;
+    background: #2f353d;
+    border-radius: 10px;
+    color: #f3f4f6;
+    font-family: "Cascadia Code", "Consolas", "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .resource-block code {
+    font-family: inherit;
+    white-space: pre;
+  }
+
+  .resource-note {
+    max-width: 820px;
+    margin-top: 32px;
+    padding: 30px;
+    box-sizing: border-box;
+    background: #f7f8fa;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .resource-note .eyebrow {
+    margin: 0 0 14px;
+  }
+
+  .resource-note h2 {
+    margin: 0 0 14px;
+    color: var(--ink);
+    font-size: clamp(28px, 3vw, 38px);
+    line-height: 1.15;
+  }
+
+  .resource-note p:not(.eyebrow) {
+    margin: 0 0 14px;
+  }
+
+  .resource-note p:last-child {
+    margin-bottom: 0;
+  }
+
+  .resource-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    justify-content: flex-start;
+    margin-top: 24px;
+  }
+
+  .resource-actions__link {
+    color: var(--orange);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .resource-actions__link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 820px) {
+    .resource-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .resource-hero {
+      padding-top: 58px;
+      padding-bottom: 54px;
+    }
+
+    .resource-hero h1 {
+      font-size: clamp(38px, 12vw, 54px);
+    }
+
+    .resource-section {
+      padding-top: 42px;
+      padding-bottom: 64px;
+    }
+
+    .resource-block {
+      height: 520px;
+      padding: 22px;
+      border-radius: 16px;
+    }
+
+    .resource-block__description {
+      min-height: 0;
+    }
+
+    .resource-block pre {
+      padding: 18px;
+      font-size: 12px;
+    }
+
+    .resource-note {
+      padding: 22px;
+      border-radius: 16px;
+    }
+
+    .resource-actions {
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll(".resource-block pre").forEach((pre) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "resource-copy-button";
+    button.textContent = "Copy";
+    button.setAttribute("aria-label", "Copy SQL");
+
+    pre.style.position = "relative";
+    button.style.position = "absolute";
+    button.style.top = "10px";
+    button.style.right = "10px";
+    button.style.padding = "5px 9px";
+    button.style.border = "1px solid #d1d5db";
+    button.style.borderRadius = "5px";
+    button.style.background = "#ffffff";
+    button.style.color = "#374151";
+    button.style.fontFamily = "inherit";
+    button.style.fontSize = "0.75rem";
+    button.style.cursor = "pointer";
+    button.style.zIndex = "2";
+
+    button.addEventListener("click", async () => {
+      const code = pre.querySelector("code");
+      if (!code) return;
+
+      try {
+        await navigator.clipboard.writeText(code.textContent || "");
+        button.textContent = "Copied";
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      } catch {
+        button.textContent = "Copy failed";
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      }
+    });
+
+    pre.appendChild(button);
+  });
+</script>

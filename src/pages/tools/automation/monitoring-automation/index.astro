@@ -1,0 +1,419 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Monitoring Automation | ORASOLU"
+  description="Practical resources for turning database checks into repeatable monitoring and operational workflows."
+>
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="eyebrow">ORASOLU TOOLBOX · AUTOMATION &amp; DEVOPS</div>
+        <h1>Monitoring Automation</h1>
+        <p>
+          Practical resources for turning database checks into repeatable monitoring and operational workflows.
+        </p>
+      </div>
+    </section>
+
+    <section class="resource-section">
+      <div class="container">
+        <div class="resource-intro">
+          <div class="eyebrow">ORASOLU TOOLBOX · AUTOMATION &amp; DEVOPS</div>
+          <h2>Turn database checks into useful signals</h2>
+          <p>
+            Monitoring automation works best when each check has a clear threshold, useful evidence and an operational response. These examples provide simple starting points for repeatable database monitoring.
+          </p>
+        </div>
+
+        <div class="resource-grid">
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">01 · SESSIONS</div>
+              <h2>Monitor active sessions</h2>
+            </div>
+            <p class="resource-block__description">
+              Identify sessions currently active or waiting so workload changes can be surfaced.
+            </p>
+            <pre><code>SELECT
+    sid,
+    serial#,
+    username,
+    status,
+    event,
+    wait_class,
+    seconds_in_wait
+FROM v$session
+WHERE type = 'USER'
+ORDER BY seconds_in_wait DESC;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">02 · TABLESPACE</div>
+              <h2>Monitor tablespace usage</h2>
+            </div>
+            <p class="resource-block__description">
+              Identify tablespaces whose used percentage has reached a monitoring threshold.
+            </p>
+            <pre><code>SELECT
+    tablespace_name,
+    ROUND(used_percent, 2) AS used_percent
+FROM dba_tablespace_usage_metrics
+WHERE used_percent &gt;= 80
+ORDER BY used_percent DESC;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">03 · BLOCKING</div>
+              <h2>Monitor blocking sessions</h2>
+            </div>
+            <p class="resource-block__description">
+              Find sessions currently blocking other sessions.
+            </p>
+            <pre><code>SELECT
+    sid,
+    serial#,
+    username,
+    blocking_session,
+    event
+FROM v$session
+WHERE blocking_session IS NOT NULL
+ORDER BY blocking_session, sid;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">04 · INVALID</div>
+              <h2>Monitor invalid objects</h2>
+            </div>
+            <p class="resource-block__description">
+              Detect invalid objects that may indicate deployment or maintenance issues.
+            </p>
+            <pre><code>SELECT
+    owner,
+    object_type,
+    COUNT(*) AS invalid_count
+FROM dba_objects
+WHERE status = 'INVALID'
+GROUP BY owner, object_type
+ORDER BY invalid_count DESC;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">05 · JOBS</div>
+              <h2>Monitor scheduler failures</h2>
+            </div>
+            <p class="resource-block__description">
+              Surface recent scheduler failures for operational follow-up.
+            </p>
+            <pre><code>SELECT
+    owner,
+    job_name,
+    status,
+    error#,
+    actual_start_date
+FROM dba_scheduler_job_run_details
+WHERE status &lt;&gt; 'SUCCEEDED'
+ORDER BY actual_start_date DESC
+FETCH FIRST 20 ROWS ONLY;</code></pre>
+          </article>
+
+          <article class="resource-block">
+            <div class="resource-block__header">
+              <div class="resource-block__label">06 · ALERTS</div>
+              <h2>Build a monitoring result</h2>
+            </div>
+            <p class="resource-block__description">
+              Return a simple status value that can be consumed by a script or monitoring workflow.
+            </p>
+            <pre><code>SELECT
+    CASE
+        WHEN EXISTS (
+            SELECT 1
+            FROM dba_tablespace_usage_metrics
+            WHERE used_percent &gt;= 90
+        )
+        THEN 'ALERT'
+        ELSE 'OK'
+    END AS status
+FROM dual;</code></pre>
+          </article>
+        </div>
+
+        <div class="resource-note">
+          <div class="resource-note__label">ORASOLU TOOLBOX · AUTOMATION &amp; DEVOPS</div>
+          <h3>A monitoring check should lead to useful evidence.</h3>
+          <p>
+            Avoid collecting metrics without an operational purpose. Define what is being checked, what threshold matters and what evidence an operator needs when the check reports a problem.
+          </p>
+        </div>
+
+        <div class="resource-actions">
+          <a class="button button--primary" href="/tools/automation/">
+            Back to Automation &amp; DevOps
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll(".resource-block pre").forEach((pre) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "resource-copy-button";
+    button.textContent = "Copy";
+    button.setAttribute("aria-label", "Copy SQL");
+
+    pre.style.position = "relative";
+
+    button.style.position = "absolute";
+    button.style.top = "10px";
+    button.style.right = "10px";
+    button.style.padding = "5px 9px";
+    button.style.border = "1px solid #d1d5db";
+    button.style.borderRadius = "5px";
+    button.style.background = "#ffffff";
+    button.style.color = "#374151";
+    button.style.fontFamily = "inherit";
+    button.style.fontSize = "0.75rem";
+    button.style.cursor = "pointer";
+    button.style.zIndex = "2";
+
+    button.addEventListener("click", async () => {
+      const code = pre.querySelector("code");
+      if (!code) return;
+
+      try {
+        await navigator.clipboard.writeText(code.textContent || "");
+        button.textContent = "Copied";
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      } catch {
+        button.textContent = "Copy failed";
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      }
+    });
+
+    pre.appendChild(button);
+  });
+</script>
+
+<style>
+.resource-section {
+  padding-top: 56px;
+  padding-bottom: 72px;
+}
+
+.resource-intro {
+  max-width: 820px;
+  margin-bottom: 32px;
+}
+
+.resource-intro h2 {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.15;
+}
+
+.resource-intro p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  align-items: start;
+}
+
+.resource-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 560px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 30px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+
+.resource-block:hover {
+  border-color: #d8dce1;
+  box-shadow: 0 12px 30px rgba(17, 29, 44, 0.06);
+  transform: translateY(-3px);
+}
+
+.resource-block__header {
+  margin-bottom: 10px;
+}
+
+.resource-block__label {
+  margin-bottom: 9px;
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+}
+
+.resource-block h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.resource-block__description {
+  min-height: 48px;
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.resource-block pre {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 22px;
+  overflow-x: auto;
+  overflow-y: auto;
+  background: #2f353d;
+  border-radius: 10px;
+  color: #f3f4f6;
+  font-family:
+    "Cascadia Code",
+    "Consolas",
+    "Courier New",
+    monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre;
+}
+
+.resource-block code {
+  font-family: inherit;
+  white-space: pre;
+}
+
+.resource-copy-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 9px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #374151;
+  font-family: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.resource-copy-button:hover {
+  background: #f3f4f6;
+}
+
+.resource-note {
+  margin-top: 32px;
+  padding: 30px;
+  background: #f7f8fa;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.resource-note__label {
+  margin-bottom: 10px;
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.resource-note h3 {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.resource-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.resource-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+@media (max-width: 820px) {
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .resource-section {
+    padding-top: 52px;
+    padding-bottom: 64px;
+  }
+
+  .resource-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .resource-block {
+    height: 520px;
+    padding: 22px;
+    border-radius: 16px;
+  }
+
+  .resource-block__description {
+    min-height: 0;
+  }
+
+  .resource-block pre {
+    padding: 18px;
+    font-size: 12px;
+  }
+
+  .resource-note {
+    padding: 22px;
+    border-radius: 16px;
+  }
+
+  .resource-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+}
+</style>
