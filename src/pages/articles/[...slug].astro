@@ -19,8 +19,59 @@ export async function getStaticPaths() {
 
 const { article } = Astro.props;
 
-const { Content } = await render(article);
+const { Content, headings } = await render(article);
+const allArticles = await getCollection("articles", ({ data }) => {
+  return !data.draft;
+});
 
+const currentTags = article.data.tags || [];
+
+const sortedArticles = [...allArticles].sort(
+  (a, b) =>
+    b.data.publishedDate.getTime() - a.data.publishedDate.getTime()
+);
+
+const currentIndex = sortedArticles.findIndex(
+  (item) => item.id === article.id
+);
+
+const previousArticle =
+  currentIndex >= 0 && currentIndex < sortedArticles.length - 1
+    ? sortedArticles[currentIndex + 1]
+    : null;
+
+const nextArticle =
+  currentIndex > 0
+    ? sortedArticles[currentIndex - 1]
+    : null;
+const relatedArticles = allArticles
+  .filter((item) => item.id !== article.id)
+  .map((item) => {
+    const sharedTags = (item.data.tags || []).filter((tag) =>
+      currentTags.includes(tag)
+    );
+
+    const sameCategory = item.data.category === article.data.category;
+
+    return {
+      article: item,
+      score: sharedTags.length + (sameCategory ? 2 : 0),
+    };
+  })
+  .filter((item) => item.score > 0)
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 3);
+
+
+const articleText = JSON.stringify(article.body || "")
+  .replace(/\s+/g, " ")
+  .trim();
+
+const wordCount = articleText
+  ? articleText.split(/\s+/).length
+  : 0;
+
+const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 const formattedDate = article.data.publishedDate.toLocaleDateString(
   "en-US",
   {
@@ -52,6 +103,11 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
         <span class="article-meta__date">
           {formattedDate}
         </span>
+        <span class="article-meta__separator">·</span>
+
+        <span class="article-meta__reading-time">
+          {readingTime} min read
+        </span>
       </div>
     </div>
   </section>
@@ -62,7 +118,49 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
         <Content />
       </main>
 
+      {(previousArticle || nextArticle) && (
+        <nav class="article-navigation" aria-label="Article navigation">
+          {previousArticle ? (
+            <a
+              class="article-navigation__link article-navigation__link--previous"
+              href={`/articles/${previousArticle.id.replace(/\.md$/, "")}/`}
+            >
+              <span class="article-navigation__label">Previous Article</span>
+              <strong>{previousArticle.data.title}</strong>
+            </a>
+          ) : (
+            <div></div>
+          )}
+
+          {nextArticle ? (
+            <a
+              class="article-navigation__link article-navigation__link--next"
+              href={`/articles/${nextArticle.id.replace(/\.md$/, "")}/`}
+            >
+              <span class="article-navigation__label">Next Article</span>
+              <strong>{nextArticle.data.title}</strong>
+            </a>
+          ) : (
+            <div></div>
+          )}
+        </nav>
+      )}
       <aside class="article-sidebar">
+        {headings.length > 0 && (
+          <nav class="article-toc" aria-label="Table of contents">
+            <div class="article-toc__eyebrow">ON THIS PAGE</div>
+
+            <ul class="article-toc__list">
+              {headings.map((heading) => (
+                <li class:list={{ "article-toc__item--sub": heading.depth > 2 }}>
+                  <a href={`#${heading.slug}`}>
+                    {heading.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
         <div class="article-sidebar__card">
           <div class="eyebrow">ORASOLU</div>
 
@@ -81,6 +179,57 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
       </aside>
     </div>
   </article>
+<script>
+  document.querySelectorAll(".article-body pre").forEach((pre) => {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "code-copy-button";
+    button.textContent = "Copy";
+
+    pre.style.position = "relative";
+
+    button.style.position = "absolute";
+    button.style.top = "10px";
+    button.style.right = "10px";
+    button.style.padding = "5px 9px";
+    button.style.border = "1px solid #d1d5db";
+    button.style.borderRadius = "5px";
+    button.style.background = "#ffffff";
+    button.style.color = "#374151";
+    button.style.fontFamily = "inherit";
+    button.style.fontSize = "0.75rem";
+    button.style.cursor = "pointer";
+    button.style.zIndex = "2";
+    button.setAttribute("aria-label", "Copy code");
+
+    button.addEventListener("click", async () => {
+      const code = pre.querySelector("code");
+
+      if (!code) {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(code.textContent || "");
+
+        button.textContent = "Copied";
+
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      } catch {
+        button.textContent = "Copy failed";
+
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      }
+    });
+
+    pre.appendChild(button);
+  });
+</script>
 </BaseLayout>
 
 <style>
@@ -131,10 +280,31 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
   }
 
   .article-body :global(pre) {
+    position: relative;
     margin: 1.75rem 0;
     padding: 1.25rem;
     overflow-x: auto;
     border-radius: 10px;
+  }
+
+  :global(.article-body pre) .code-copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 9px;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #374151;
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    opacity: 0.9;
+  }
+
+  :global(.article-body pre) .code-copy-button:hover {
+    opacity: 1;
+    color: #e85d04;
   }
 
   .article-body :global(code) {
@@ -146,9 +316,119 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
       monospace;
   }
 
+  .related-articles {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .related-articles__header {
+    margin-bottom: 1.5rem;
+  }
+
+  .related-articles__header .eyebrow {
+    margin-bottom: 0.5rem;
+  }
+
+  .related-articles__header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+
+  .related-articles__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .related-article {
+    display: block;
+    padding: 1.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .related-article:hover {
+    border-color: #f56a00;
+    transform: translateY(-2px);
+  }
+
+  .related-article__category {
+    display: block;
+    margin-bottom: 0.65rem;
+    color: #f56a00;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .related-article h3 {
+    margin: 0 0 0.65rem;
+    font-size: 1.05rem;
+    line-height: 1.4;
+  }
+
+  .related-article p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
   .article-sidebar {
     position: sticky;
     top: 7rem;
+  }
+
+  .article-toc {
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    background: #ffffff;
+  }
+
+  .article-toc__eyebrow {
+    margin-bottom: 0.85rem;
+    color: #6b7280;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .article-toc__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .article-toc__list li {
+    margin: 0;
+  }
+
+  .article-toc__list a {
+    display: block;
+    padding: 0.35rem 0;
+    color: #374151;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    text-decoration: none;
+  }
+
+  .article-toc__list a:hover {
+    color: #e85d04;
+  }
+
+  .article-toc__item--sub {
+    padding-left: 0.85rem;
   }
 
   .article-sidebar__card {
@@ -168,12 +448,83 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
   }
 
   @media (max-width: 900px) {
+    .related-articles__grid {
+      grid-template-columns: 1fr;
+    }
+
     .article-content__layout {
       grid-template-columns: 1fr;
       gap: 2rem;
     }
 
-    .article-sidebar {
+    .related-articles {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .related-articles__header {
+    margin-bottom: 1.5rem;
+  }
+
+  .related-articles__header .eyebrow {
+    margin-bottom: 0.5rem;
+  }
+
+  .related-articles__header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+
+  .related-articles__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .related-article {
+    display: block;
+    padding: 1.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .related-article:hover {
+    border-color: #f56a00;
+    transform: translateY(-2px);
+  }
+
+  .related-article__category {
+    display: block;
+    margin-bottom: 0.65rem;
+    color: #f56a00;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .related-article h3 {
+    margin: 0 0 0.65rem;
+    font-size: 1.05rem;
+    line-height: 1.4;
+  }
+
+  .related-article p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .article-sidebar {
       position: static;
     }
   }

@@ -1,0 +1,685 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout>
+
+  <section class="page-hero">
+    <div class="container">
+
+      <div class="eyebrow">ORASOLU TOOLBOX &middot; SQL &amp; DATABASE</div>
+
+      <h1>
+        SQL <span>Investigation</span>
+      </h1>
+
+      <p>
+        Practical Oracle SQL for investigating workload, execution
+        activity, resource usage and SQL performance clues.
+      </p>
+
+    </div>
+  </section>
+
+
+  <section class="section resource-section">
+    <div class="container">
+
+      <div class="resource-intro">
+
+        <div class="eyebrow">ORASOLU TOOLBOX &middot; SQL &amp; DATABASE</div>
+
+        <h2>
+          Find the SQL behind database activity
+        </h2>
+
+        <p>
+          These queries provide a practical starting point for
+          identifying SQL statements, understanding their execution
+          activity and finding candidates for deeper performance
+          investigation.
+        </p>
+
+      </div>
+
+
+      <div class="resource-grid">
+
+
+      <div class="resource-block">
+
+        <div class="resource-block__header">
+          <div>
+            <div class="resource-block__label">01 &middot; SQL ACTIVITY</div>
+
+            <h2>
+              Review recently active SQL
+            </h2>
+          </div>
+        </div>
+
+        <p class="resource-block__description">
+          Review SQL currently represented in the shared SQL area,
+          ordered by recent activity. This can help identify statements
+          worth investigating further.
+        </p>
+
+        <pre><code>SELECT
+    sql_id,
+    child_number,
+    plan_hash_value,
+    executions,
+    ROUND(elapsed_time / 1000000, 2) AS elapsed_seconds,
+    ROUND(cpu_time / 1000000, 2) AS cpu_seconds,
+    buffer_gets,
+    disk_reads,
+    rows_processed,
+    last_active_time
+FROM v$sql
+WHERE last_active_time IS NOT NULL
+ORDER BY last_active_time DESC
+FETCH FIRST 50 ROWS ONLY;</code></pre>
+
+      </div>
+
+
+      <div class="resource-block">
+
+        <div class="resource-block__header">
+          <div>
+            <div class="resource-block__label">02 &middot; EXECUTIONS</div>
+
+            <h2>
+              Find heavily executed SQL
+            </h2>
+          </div>
+        </div>
+
+        <p class="resource-block__description">
+          A high execution count does not automatically mean a SQL
+          statement is problematic. It can, however, help identify
+          frequently executed statements that deserve further review.
+        </p>
+
+        <pre><code>SELECT
+    sql_id,
+    child_number,
+    executions,
+    ROUND(elapsed_time / 1000000, 2) AS elapsed_seconds,
+    ROUND(
+        CASE
+            WHEN executions &gt; 0
+            THEN elapsed_time / executions / 1000
+        END,
+        2
+    ) AS avg_elapsed_ms,
+    buffer_gets,
+    disk_reads,
+    last_active_time
+FROM v$sql
+WHERE executions &gt; 0
+ORDER BY executions DESC
+FETCH FIRST 50 ROWS ONLY;</code></pre>
+
+      </div>
+
+
+      <div class="resource-block">
+
+        <div class="resource-block__header">
+          <div>
+            <div class="resource-block__label">03 &middot; CPU</div>
+
+            <h2>
+              Find SQL using significant CPU time
+            </h2>
+          </div>
+        </div>
+
+        <p class="resource-block__description">
+          CPU time can help identify SQL statements that are consuming
+          significant database CPU. Review the SQL in the context of
+          executions and overall workload.
+        </p>
+
+        <pre><code>SELECT
+    sql_id,
+    child_number,
+    executions,
+    ROUND(cpu_time / 1000000, 2) AS cpu_seconds,
+    ROUND(
+        CASE
+            WHEN executions &gt; 0
+            THEN cpu_time / executions / 1000
+        END,
+        2
+    ) AS avg_cpu_ms,
+    buffer_gets,
+    disk_reads,
+    last_active_time
+FROM v$sql
+WHERE cpu_time &gt; 0
+ORDER BY cpu_time DESC
+FETCH FIRST 50 ROWS ONLY;</code></pre>
+
+      </div>
+
+
+      <div class="resource-block">
+
+        <div class="resource-block__header">
+          <div>
+            <div class="resource-block__label">04 &middot; BUFFER GETS</div>
+
+            <h2>
+              Find SQL with high logical I/O
+            </h2>
+          </div>
+        </div>
+
+        <p class="resource-block__description">
+          Buffer gets represent logical reads and can help identify
+          statements performing significant work in the buffer cache.
+        </p>
+
+        <pre><code>SELECT
+    sql_id,
+    child_number,
+    executions,
+    buffer_gets,
+    ROUND(
+        CASE
+            WHEN executions &gt; 0
+            THEN buffer_gets / executions
+        END
+    ) AS buffer_gets_per_exec,
+    disk_reads,
+    rows_processed,
+    last_active_time
+FROM v$sql
+WHERE buffer_gets &gt; 0
+ORDER BY buffer_gets DESC
+FETCH FIRST 50 ROWS ONLY;</code></pre>
+
+      </div>
+
+
+      <div class="resource-block">
+
+        <div class="resource-block__header">
+          <div>
+            <div class="resource-block__label">05 &middot; SQL TEXT</div>
+
+            <h2>
+              Retrieve SQL text by SQL ID
+            </h2>
+          </div>
+        </div>
+
+        <p class="resource-block__description">
+          Once a SQL ID has been identified, use it to retrieve the
+          SQL text for further investigation.
+        </p>
+
+        <pre><code>SELECT
+    sql_id,
+    child_number,
+    sql_text
+FROM v$sql
+WHERE sql_id = '&amp;SQL_ID'
+ORDER BY child_number;</code></pre>
+
+      </div>
+
+
+      <div class="resource-block">
+
+        <div class="resource-block__header">
+          <div>
+            <div class="resource-block__label">06 &middot; SQL & SESSION</div>
+
+            <h2>
+              Correlate SQL with active sessions
+            </h2>
+          </div>
+        </div>
+
+        <p class="resource-block__description">
+          Correlate the SQL ID from V$SESSION with V$SQL to connect
+          current session activity with the SQL statement represented
+          in the shared SQL area.
+        </p>
+
+        <pre><code>SELECT
+    s.sid,
+    s.serial#,
+    s.username,
+    s.status,
+    s.sql_id,
+    s.event,
+    s.wait_class,
+    q.plan_hash_value,
+    q.executions,
+    ROUND(q.elapsed_time / 1000000, 2) AS elapsed_seconds,
+    q.sql_text
+FROM v$session s
+LEFT JOIN v$sql q
+    ON q.sql_id = s.sql_id
+   AND q.child_number = s.sql_child_number
+WHERE s.status = 'ACTIVE'
+  AND s.username IS NOT NULL
+ORDER BY s.sid;</code></pre>
+
+      </div></div>
+
+
+      <div class="resource-note">
+
+        <div class="eyebrow">ORASOLU TOOLBOX &middot; SQL &amp; DATABASE</div>
+
+        <h2>
+          A high SQL metric is a clue, not a conclusion.
+        </h2>
+
+        <p>
+          Execution count, CPU time, elapsed time, buffer gets and
+          disk reads should be interpreted in the context of workload,
+          execution frequency, application behaviour and historical
+          performance. Use these queries to identify candidates for
+          deeper investigation rather than treating one metric as
+          the complete diagnosis.
+        </p>
+
+      </div>
+
+
+      <div class="resource-actions">
+
+        <a class="button button--primary" href="/tools/sql/">
+          Back to SQL & Database
+        </a>
+
+        <a class="resource-actions__link" href="/tools/sql/database-objects/">
+          Database Objects
+        </a>
+
+      </div>
+
+    </div>
+  </section>
+
+</BaseLayout>
+
+
+<style>
+
+  .resource-section {
+  padding-top: 56px;
+  padding-bottom: 72px;
+}
+
+  .resource-intro {
+    max-width: 820px;
+    margin-bottom: 36px;
+  }
+
+  .resource-intro h2 {
+    margin: 0 0 14px;
+    color: var(--ink);
+    font-size: clamp(28px, 3vw, 38px);
+    line-height: 1.15;
+  }
+
+  .resource-intro p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .resource-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.resource-block {
+        margin-bottom: 0;
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+  }
+
+  .resource-block__header {
+    margin-bottom: 12px;
+  }
+
+  .resource-block__label {
+    margin-bottom: 9px;
+    color: var(--orange);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    line-height: 1.2;
+  }
+
+  .resource-block h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 22px;
+    line-height: 1.3;
+  }
+
+  .resource-block__description {
+    max-width: 820px;
+    margin: 0 0 22px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .resource-block pre {
+    position: relative;
+    margin: 0;
+    padding: 22px;
+    overflow-x: auto;
+    background: #2f353d;
+    border-radius: 10px;
+    color: #f3f4f6;
+    font-family:
+      "Cascadia Code",
+      "Consolas",
+      "Courier New",
+      monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .resource-block code {
+    font-family: inherit;
+  }
+
+  .resource-note {
+    max-width: 820px;
+    margin-top: 56px;
+    padding: 30px;
+    background: #f7f8fa;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+  }
+
+  .resource-note h2 {
+    margin: 0 0 14px;
+    color: var(--ink);
+    font-size: clamp(24px, 3vw, 32px);
+    line-height: 1.2;
+  }
+
+  .resource-note p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .resource-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  .resource-actions__link {
+    color: var(--orange);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .resource-actions__link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 820px) {
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+
+    .resource-section {
+  padding-top: 56px;
+  padding-bottom: 72px;
+}
+
+    .resource-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.resource-block {
+          padding: 22px;
+      border-radius: 16px;
+    }
+
+    .resource-block pre {
+      padding: 18px;
+      font-size: 12px;
+    }
+
+    .resource-actions {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+  }
+
+
+  /* ORASOLU TOOLBOX - STANDARD RESOURCE SYSTEM */
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    align-items: start;
+  }
+
+  .resource-block {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin: 0;
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    transition:
+      border-color 0.22s ease,
+      box-shadow 0.22s ease,
+      transform 0.22s ease;
+  }
+
+  .resource-block:hover {
+    border-color: #d8dce1;
+    box-shadow: 0 12px 30px rgba(17, 29, 44, 0.06);
+    transform: translateY(-3px);
+  }
+
+  .resource-block__header {
+    margin-bottom: 10px;
+  }
+
+  .resource-block__label {
+    margin-bottom: 9px;
+    color: var(--orange);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    line-height: 1.2;
+  }
+
+  .resource-block h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 22px;
+    line-height: 1.3;
+  }
+
+  .resource-block__description {
+    min-height: 48px;
+    margin: 0 0 22px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .resource-block pre {
+    position: relative;
+    margin: 0;
+    padding: 22px;
+    overflow-x: auto;
+    background: #2f353d;
+    border-radius: 10px;
+    color: #f3f4f6;
+    font-family:
+      "Cascadia Code",
+      "Consolas",
+      "Courier New",
+      monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .resource-block code {
+    font-family: inherit;
+  }
+
+  .resource-copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 9px;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #374151;
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .resource-copy-button:hover {
+    background: #f3f4f6;
+  }
+
+  @media (max-width: 820px) {
+    .resource-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .resource-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .resource-block {
+      padding: 22px;
+      border-radius: 16px;
+    }
+
+    .resource-block__description {
+      min-height: 0;
+    }
+
+    .resource-block pre {
+      padding: 18px;
+      font-size: 12px;
+    }
+  }
+
+  /* ORASOLU TOOLBOX - STANDARD RESOURCE CARD SIZE */
+
+  .resource-block {
+    height: 560px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .resource-block pre {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: auto;
+    white-space: pre;
+  }
+
+  .resource-block code {
+    white-space: pre;
+  }
+
+  @media (max-width: 680px) {
+    .resource-block {
+      height: 520px;
+    }
+  }
+</style>
+
+
+<script>
+  document.querySelectorAll(".resource-block pre").forEach((pre) => {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "resource-copy-button";
+    button.textContent = "Copy";
+    button.setAttribute("aria-label", "Copy SQL");
+
+    pre.style.position = "relative";
+
+    button.style.position = "absolute";
+    button.style.top = "10px";
+    button.style.right = "10px";
+    button.style.padding = "5px 9px";
+    button.style.border = "1px solid #d1d5db";
+    button.style.borderRadius = "5px";
+    button.style.background = "#ffffff";
+    button.style.color = "#374151";
+    button.style.fontFamily = "inherit";
+    button.style.fontSize = "0.75rem";
+    button.style.cursor = "pointer";
+    button.style.zIndex = "2";
+
+    button.addEventListener("click", async () => {
+      const code = pre.querySelector("code");
+
+      if (!code) {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(code.textContent || "");
+
+        button.textContent = "Copied";
+
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      } catch {
+        button.textContent = "Copy failed";
+
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      }
+    });
+
+    pre.appendChild(button);
+  });
+</script>
