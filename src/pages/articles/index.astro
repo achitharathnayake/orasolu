@@ -19,6 +19,16 @@ const categories = [
  )
  ),
 ];
+
+const categoryImages: Record<string, string> = {
+ "Automation & DevOps": "/images/article-bg/automation-and-devops.png",
+ "Backup & Recovery": "/images/article-bg/backup-and-recovery.png",
+ "High Availability": "/images/article-bg/high-availability.png",
+ "Migration": "/images/article-bg/migration.png",
+ "Performance": "/images/article-bg/performance.png",
+ "SQL & Database": "/images/article-bg/sql-and-database.png",
+ "Storage & Capacity": "/images/article-bg/storage-and-capacity.png",
+};
 ---
 
 <BaseLayout>
@@ -27,12 +37,11 @@ const categories = [
  <div class="eyebrow">ORASOLU ARTICLES</div>
 
  <h1>
- Oracle Database
- <span>Knowledge</span>
+ Oracle Database <span>Knowledge</span>
  </h1>
 
  <p>
- Practical knowledge, technical solutions and lessons learned across
+ Technical knowledge, technical solutions and lessons learned across
  Oracle Database, cloud, infrastructure, automation and related
  technologies.
  </p>
@@ -50,7 +59,7 @@ const categories = [
 
  <p>
  Articles based on real-world experience, technical investigations,
- migrations, troubleshooting and practical solutions.
+ migrations, troubleshooting and technical solutions.
  </p>
  </div>
  </div>
@@ -81,6 +90,7 @@ const categories = [
  articles.map((article) => {
  const image =
  article.data.image ||
+ categoryImages[article.data.category] ||
  "/images/orasolu-hero.png";
 
  return (
@@ -180,8 +190,8 @@ const categories = [
  <p>
  ORASOLU will gradually grow with articles covering database
  administration, architecture, performance, migrations, high
- availability, cloud, automation, infrastructure and other areas of
- practical technology work.
+ availability, cloud, automation, infrastructure and other areas
+ of technology work.
  </p>
  </div>
  </div>

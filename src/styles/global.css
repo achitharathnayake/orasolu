@@ -4,7 +4,7 @@
   --navy: #111d2c;
   --ink: #172235;
   --muted: #657287;
-  --surface: #ffffff;
+  --surface: #f3f5f8;
   --soft: #f7f8fa;
   --line: #e7eaf0;
   --shadow: 0 16px 40px rgba(17, 29, 44, .08);
@@ -205,7 +205,7 @@ img {
 .hero h1 {
   margin: 0;
   font-size: clamp(48px, 6vw, 82px);
-  line-height: .96;
+  line-height: 1.04;
   letter-spacing: -.05em;
   color: #fff;
 }
@@ -276,6 +276,12 @@ img {
   transform: translateY(-2px);
   border-color: rgba(244, 90, 36, .30);
   box-shadow: 0 12px 28px rgba(17, 29, 44, .08);
+}
+
+.topic-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
 }
 
 .topic-icon {
@@ -398,6 +404,10 @@ img {
 /* =========================================================
    ARTICLE GRID
    ========================================================= */
+
+.articles-section {
+  background: #f8f9fb;
+}
 
 .articles-grid {
   display: grid;
@@ -564,12 +574,26 @@ img {
   max-width: 850px;
   margin: 0;
   font-size: clamp(48px, 6vw, 78px);
-  line-height: .98;
+  line-height: 1.04;
   letter-spacing: -.045em;
   color: var(--ink);
 }
 
+.toolbox-hero h1 {
+  white-space: nowrap;
+  font-size: clamp(38px, 5.2vw, 72px);
+}
+
+.toolbox-hero h1 span {
+  display: inline;
+  margin-top: 0;
+  color: var(--orange);
+}
+
 .page-hero h1 span {
+  display: block;
+  margin-top: 8px;
+  color: var(--orange);
   color: var(--orange);
 }
 
@@ -583,7 +607,7 @@ img {
 
 
 /* =========================================================
-   ABOUT â€” PERSON
+   ABOUT Ã¢â‚¬â€ PERSON
    ========================================================= */
 
 .about-person-section {
@@ -658,7 +682,7 @@ img {
 
 
 /* =========================================================
-   ABOUT â€” PROFESSIONAL SCOPE
+   ABOUT Ã¢â‚¬â€ PROFESSIONAL SCOPE
    ========================================================= */
 
 .section-intro {
@@ -759,7 +783,7 @@ img {
 
 
 /* =========================================================
-   ABOUT â€” WHY ORASOLU
+   ABOUT Ã¢â‚¬â€ WHY ORASOLU
    ========================================================= */
 
 .about-purpose {
@@ -792,7 +816,7 @@ img {
 
 
 /* =========================================================
-   ABOUT â€” CONNECT
+   ABOUT Ã¢â‚¬â€ CONNECT
    ========================================================= */
 
 .about-connect {
@@ -860,7 +884,11 @@ img {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .articles-grid {
+  .articles-section {
+  background: #f8f9fb;
+}
+
+.articles-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -950,7 +978,11 @@ img {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .articles-grid {
+  .articles-section {
+  background: #f8f9fb;
+}
+
+.articles-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1157,7 +1189,18 @@ img {
   line-height: 1.45;
 }
 
+.resource-section {
+  background: #fff;
+}
+
+.toolbox-page main {
+  background: #fff;
+}
+
 @media (max-width: 700px) {
+  .toolbox-hero h1 {
+    font-size: 38px;
+  }
   .article-navigation {
     grid-template-columns: 1fr;
   }

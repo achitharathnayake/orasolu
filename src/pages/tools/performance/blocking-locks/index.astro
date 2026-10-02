@@ -7,10 +7,10 @@ import BaseLayout from "../../../../layouts/BaseLayout.astro";
   description="Practical Oracle SQL for investigating blocking sessions, locks and contention."
 >
   <main>
-    <section class="page-hero">
+    <section class="page-hero toolbox-hero">
       <div class="container">
-        <div class="eyebrow">ORASOLU TOOLBOX · PERFORMANCE</div>
-        <h1>Blocking &amp; Locks</h1>
+        <div class="eyebrow">ORASOLU TOOLBOX &middot; PERFORMANCE</div>
+        <h1>Blocking <span>&amp; Locks</span></h1>
         <p>
           Practical Oracle SQL for identifying blockers, blocked sessions,
           lock holders and the SQL associated with contention.
@@ -21,7 +21,7 @@ import BaseLayout from "../../../../layouts/BaseLayout.astro";
     <section class="resource-section">
       <div class="container">
         <div class="resource-intro">
-          <div class="eyebrow">ORASOLU TOOLBOX · PERFORMANCE</div>
+          <div class="eyebrow">ORASOLU TOOLBOX &middot; PERFORMANCE</div>
           <h2>Find the session holding the lock and the session waiting for it</h2>
           <p>
             Start with the blocking relationship, then correlate the sessions
@@ -33,7 +33,7 @@ import BaseLayout from "../../../../layouts/BaseLayout.astro";
         <div class="resource-grid">
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">01 · BLOCKING SESSIONS</div>
+              <div class="resource-block__label">01 &middot; BLOCKING SESSIONS</div>
               <h2>Find sessions blocking others</h2>
             </div>
             <p class="resource-block__description">
@@ -65,7 +65,7 @@ ORDER BY waiter.seconds_in_wait DESC;</code></pre>
 
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">02 · BLOCKED SESSIONS</div>
+              <div class="resource-block__label">02 &middot; BLOCKED SESSIONS</div>
               <h2>Find sessions waiting for blockers</h2>
             </div>
             <p class="resource-block__description">
@@ -90,7 +90,7 @@ ORDER BY seconds_in_wait DESC;</code></pre>
 
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">03 · BLOCKING CHAINS</div>
+              <div class="resource-block__label">03 &middot; BLOCKING CHAINS</div>
               <h2>Inspect the blocking hierarchy</h2>
             </div>
             <p class="resource-block__description">
@@ -116,7 +116,7 @@ ORDER BY final_blocking_session, blocking_session, sid;</code></pre>
 
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">04 · LOCK DETAILS</div>
+              <div class="resource-block__label">04 &middot; LOCK DETAILS</div>
               <h2>Inspect current lock requests</h2>
             </div>
             <p class="resource-block__description">
@@ -144,7 +144,7 @@ ORDER BY l.block DESC, l.request DESC, l.ctime DESC;</code></pre>
 
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">05 · LOCKED OBJECTS</div>
+              <div class="resource-block__label">05 &middot; LOCKED OBJECTS</div>
               <h2>Find database objects involved in locks</h2>
             </div>
             <p class="resource-block__description">
@@ -171,7 +171,7 @@ ORDER BY o.owner, o.object_name, lo.session_id;</code></pre>
 
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">06 · BLOCKER SQL</div>
+              <div class="resource-block__label">06 &middot; BLOCKER SQL</div>
               <h2>Correlate the blocker with SQL</h2>
             </div>
             <p class="resource-block__description">
@@ -201,7 +201,7 @@ WHERE s.sid = &amp;blocker_sid;</code></pre>
         </div>
 
         <div class="resource-note">
-          <div class="resource-note__label">ORASOLU TOOLBOX · PERFORMANCE</div>
+          <div class="resource-note__label">ORASOLU TOOLBOX &middot; PERFORMANCE</div>
           <h3>Blocking is a relationship between sessions, not just a wait event.</h3>
           <p>
             Identify the blocker, the blocked session and the resource involved,

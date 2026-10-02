@@ -98,12 +98,12 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
           {article.data.author}
         </span>
 
-        <span class="article-meta__separator">·</span>
+        <span class="article-meta__separator">&middot;</span>
 
         <span class="article-meta__date">
           {formattedDate}
         </span>
-        <span class="article-meta__separator">·</span>
+        <span class="article-meta__separator">&middot;</span>
 
         <span class="article-meta__reading-time">
           {readingTime} min read
@@ -173,7 +173,7 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
           </p>
 
           <a href="/articles/" class="button button--secondary">
-            ← All Articles
+            &larr; All Articles
           </a>
         </div>
       </aside>
@@ -233,6 +233,10 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
 </BaseLayout>
 
 <style>
+  .article-hero {
+    padding-top: 4.5rem;
+  }
+
   .article-meta {
     display: flex;
     align-items: center;
@@ -256,6 +260,8 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
   }
 
   .article-body {
+    grid-column: 1;
+    grid-row: 1;
     min-width: 0;
     max-width: 820px;
   }
@@ -383,7 +389,14 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
     line-height: 1.55;
   }
 
+  .article-navigation {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
   .article-sidebar {
+    grid-column: 2;
+    grid-row: 1 / span 2;
     position: sticky;
     top: 7rem;
   }
@@ -436,6 +449,18 @@ const formattedDate = article.data.publishedDate.toLocaleDateString(
     border: 1px solid var(--line);
     border-radius: 14px;
     background: var(--soft);
+  }
+
+  .article-sidebar__card .button--secondary {
+    color: var(--orange);
+    background: #fff3ed;
+    border-color: #ffd5c2;
+  }
+
+  .article-sidebar__card .button--secondary:hover {
+    color: #fff;
+    background: var(--orange);
+    border-color: var(--orange);
   }
 
   .article-sidebar__card h3 {

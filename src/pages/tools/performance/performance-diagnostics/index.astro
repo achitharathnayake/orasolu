@@ -3,7 +3,7 @@ import BaseLayout from "../../../../layouts/BaseLayout.astro";
 
 const resources = [
   {
-    label: "01 · SYSTEM WAITS",
+    label: "01 &middot; SYSTEM WAITS",
     title: "Find the highest system wait events",
     description:
       "Start with instance-level wait time to identify where foreground activity is spending time.",
@@ -25,7 +25,7 @@ ORDER BY time_waited_micro DESC
 FETCH FIRST 20 ROWS ONLY;`,
   },
   {
-    label: "02 · WAIT CLASSES",
+    label: "02 &middot; WAIT CLASSES",
     title: "Review wait activity by class",
     description:
       "Use wait classes to see whether the current pressure is concentrated in User I/O, Concurrency, Commit or another class.",
@@ -45,7 +45,7 @@ WHERE wait_class <> 'Idle'
 ORDER BY time_waited_micro DESC;`,
   },
   {
-    label: "03 · ACTIVE SESSIONS",
+    label: "03 &middot; ACTIVE SESSIONS",
     title: "See active sessions and current waits",
     description:
       "Combine session state, wait information and SQL identifiers to identify what is active right now.",
@@ -67,7 +67,7 @@ ORDER BY seconds_in_wait DESC
 FETCH FIRST 30 ROWS ONLY;`,
   },
   {
-    label: "04 · LONG OPERATIONS",
+    label: "04 &middot; LONG OPERATIONS",
     title: "Find long-running database operations",
     description:
       "Inspect operations with measurable progress to understand what is running for an extended period.",
@@ -89,7 +89,7 @@ ORDER BY elapsed_seconds DESC
 FETCH FIRST 20 ROWS ONLY;`,
   },
   {
-    label: "05 · RESOURCE LIMITS",
+    label: "05 &middot; RESOURCE LIMITS",
     title: "Check current resource utilization",
     description:
       "Compare current and maximum utilization against configured limits for key database resources.",
@@ -102,7 +102,7 @@ FROM v$resource_limit
 ORDER BY resource_name;`,
   },
   {
-    label: "06 · SQL MONITOR",
+    label: "06 &middot; SQL MONITOR",
     title: "Review monitored SQL executions",
     description:
       "Use Real-Time SQL Monitoring data to inspect recent executions and their elapsed time, CPU and I/O activity.",
@@ -131,7 +131,7 @@ FETCH FIRST 20 ROWS ONLY;`,
 >
   <section class="resource-hero">
     <div class="container">
-      <p class="eyebrow">ORASOLU TOOLBOX · PERFORMANCE</p>
+      <p class="eyebrow">ORASOLU TOOLBOX &middot; PERFORMANCE</p>
       <h1>Performance &amp; <span>Diagnostics</span></h1>
       <p>
         Practical Oracle performance scripts, diagnostics queries and
@@ -143,7 +143,7 @@ FETCH FIRST 20 ROWS ONLY;`,
   <section class="resource-section">
     <div class="container">
       <div class="resource-intro">
-        <p class="eyebrow">ORASOLU TOOLBOX · PERFORMANCE</p>
+        <p class="eyebrow">ORASOLU TOOLBOX &middot; PERFORMANCE</p>
         <h2>Practical performance diagnostics for everyday database work</h2>
         <p>
           A collection of reusable queries for investigating waits, active
@@ -232,6 +232,7 @@ FETCH FIRST 20 ROWS ONLY;`,
 
   <style>
     .resource-hero {
+      background: #fff !important;
       padding-top: 82px;
       padding-bottom: 72px;
       border-bottom: 1px solid var(--line);
@@ -410,8 +411,7 @@ FETCH FIRST 20 ROWS ONLY;`,
     }
 
     @media (max-width: 680px) {
-      .resource-hero {
-        padding-top: 58px;
+      .resource-hero {padding-top: 58px;
         padding-bottom: 54px;
       }
 

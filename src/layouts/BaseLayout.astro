@@ -9,7 +9,7 @@ interface Props {
 }
 const {
   title = "ORASOLU",
-  description = "Practical Oracle Database knowledge, DBA practices, performance engineering, migrations, automation and cloud.",
+  description = "Oracle Database expertise, DBA practices, performance engineering, migrations, automation and cloud.",
 } = Astro.props;
 ---
 <!doctype html>
@@ -24,7 +24,7 @@ const {
     
     <title>{title}</title>
 </head>
-  <body>
+  <body class={Astro.url.pathname.startsWith("/tools") ? "toolbox-page" : ""}>
     <Header />
     <link rel="icon" type="image/png" sizes="32x32" href="/branding/favicon.png" />
     <link rel="icon" type="image/png" sizes="48x48" href="/branding/favicon.png" />

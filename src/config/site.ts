@@ -1,8 +1,8 @@
 export const site = {
   name: "ORASOLU",
-  tagline: "Practical Oracle Engineering",
+  tagline: "Oracle Engineering & Solutions",
   description:
-    "Practical Oracle Database knowledge, DBA practices, performance engineering, migrations, automation, cloud, and technical resources.",
+    "Oracle Database expertise, DBA practices, performance engineering, migrations, automation, cloud, and technical resources.",
   nav: [
     { label: "Articles", href: "/articles/" },
     { label: "Tools", href: "/tools/" },
@@ -12,7 +12,6 @@ export const site = {
     { label: "About", href: "/about/" },
   ],
   links: {
-    sloug: "https://sloug.org/",
     youtube: "#",
     linkedin: "#",
   },

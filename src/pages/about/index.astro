@@ -79,7 +79,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 
  <p>
  ORASOLU brings that experience together in one place —
- documenting practical knowledge, technical solutions,
+ documenting technical knowledge, technical solutions,
  experiments, tools and lessons learned along the way.
  </p>
 
@@ -339,7 +339,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
  </p>
 
  <p>
- The goal is simple: make practical technical knowledge
+ The goal is simple: make technical knowledge
  easier to discover, understand and apply.
  </p>
 
@@ -379,22 +379,6 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
           <path fill="currentColor" d="M6.5 8.5H3.2V21h3.3V8.5ZM4.85 3A2 2 0 1 0 4.85 7 2 2 0 0 0 4.85 3ZM21 13.85C21 10.1 19 8.3 16.25 8.3c-2.23 0-3.23 1.23-3.79 2.09V8.5H9.17V21h3.29v-6.18c0-1.63.31-3.21 2.33-3.21 1.99 0 2.02 1.86 2.02 3.32V21H21v-7.15Z"/>
         </svg>
         <span>LinkedIn</span>
-      </a>
-
-      <a
-        class="connect-social"
-        href="https://sloug.org/"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="SLOUG"
-      >
-        <span class="connect-sloug-icon">
-          <img
-            src="/branding/sloug-icon.png"
-            alt=""
-          />
-        </span>
-        <span>SLOUG</span>
       </a>
 
     </div>
@@ -491,26 +475,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     display: block;
     flex: 0 0 17px;
   }
-
-  .connect-sloug-icon {
-    width: 19px;
-    height: 19px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 50%;
-    flex: 0 0 19px;
-  }
-
-  .connect-sloug-icon img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-  }
-
-  .connect-social::before,
+.connect-social::before,
   .connect-social::after {
     content: none !important;
     display: none !important;
@@ -640,26 +605,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     display: block;
     flex: 0 0 17px;
   }
-
-  .connect-sloug-icon {
-    width: 19px;
-    height: 19px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 50%;
-    flex: 0 0 19px;
-  }
-
-  .connect-sloug-icon img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-  }
-
-  .connect-social::before,
+.connect-social::before,
   .connect-social::after {
     content: none !important;
     display: none !important;
@@ -789,26 +735,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     display: block;
     flex: 0 0 17px;
   }
-
-  .connect-sloug-icon {
-    width: 19px;
-    height: 19px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 50%;
-    flex: 0 0 19px;
-  }
-
-  .connect-sloug-icon img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-  }
-
-  .connect-social::before,
+.connect-social::before,
   .connect-social::after {
     content: none !important;
     display: none !important;
@@ -862,9 +789,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
   }
 
   .social-links a,
-  a[href*="linkedin.com"],
-
-  a[href*="sloug"] {
+  a[href*="linkedin.com"] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -898,9 +823,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
   /* Hover */
 
   .social-links a:hover,
-  a[href*="linkedin.com"]:hover,
-
-  a[href*="sloug"]:hover {
+  a[href*="linkedin.com"]:hover:hover {
     transform: translateY(-1px);
     border-color: #d5dce5;
     box-shadow: 0 8px 20px rgba(23, 34, 53, .08);
@@ -915,14 +838,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 
   .social-links a::after,
   .social-links a::before,
-  a[href*="linkedin.com"]::after,
-
-  a[href*="sloug"]::after {
+  a[href*="linkedin.com"]::after::after {
     content: none !important;
     display: none !important;
   }
-
-  /* SLOUG logo */
 
   .social-logo-wrap {
     width: 18px;
@@ -951,9 +870,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     }
 
     .social-links a,
-    a[href*="linkedin.com"],
-
-    a[href*="sloug"] {
+    a[href*="linkedin.com"] {
       min-height: 42px;
       padding: 0 15px;
     }
@@ -970,9 +887,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     }
 
     .social-links a,
-    a[href*="linkedin.com"],
-
-    a[href*="sloug"] {
+    a[href*="linkedin.com"] {
       width: 100%;
       box-sizing: border-box;
     }

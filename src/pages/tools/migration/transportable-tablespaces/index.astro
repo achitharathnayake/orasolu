@@ -1,9 +1,9 @@
-﻿---
+---
 import BaseLayout from "../../../../layouts/BaseLayout.astro";
 
 const sqlBlocks = [
   {
-    label: "01 Â· TABLESPACES",
+    label: "01 &middot; TABLESPACES",
     title: "Review transport candidate tablespaces",
     description: "Review tablespace status, contents and logging before selecting a transport set.",
     sql: `SELECT
@@ -16,7 +16,7 @@ WHERE contents = 'PERMANENT'
 ORDER BY tablespace_name;`,
   },
   {
-    label: "02 Â· READ-ONLY STATUS",
+    label: "02 &middot; READ-ONLY STATUS",
     title: "Review read-only tablespaces",
     description: "Identify tablespaces currently placed in READ ONLY mode before transport.",
     sql: `SELECT
@@ -28,7 +28,7 @@ WHERE status = 'READ ONLY'
 ORDER BY tablespace_name;`,
   },
   {
-    label: "03 Â· DATAFILES",
+    label: "03 &middot; DATAFILES",
     title: "Review tablespace datafiles",
     description: "Review datafiles, sizes and autoextend settings for transport candidate tablespaces.",
     sql: `SELECT
@@ -41,7 +41,7 @@ FROM dba_data_files
 ORDER BY tablespace_name, file_name;`,
   },
   {
-    label: "04 Â· SELF-CONTAINED CHECK",
+    label: "04 &middot; SELF-CONTAINED CHECK",
     title: "Check transport set containment",
     description: "Check whether the selected tablespace set is self-contained before export.",
     sql: `EXEC DBMS_TTS.TRANSPORT_SET_CHECK(
@@ -53,7 +53,7 @@ SELECT *
 FROM transport_set_violations;`,
   },
   {
-    label: "05 Â· TRANSPORT VIOLATIONS",
+    label: "05 &middot; TRANSPORT VIOLATIONS",
     title: "Review transport set violations",
     description: "Review dependency or containment violations reported by the transport set check.",
     sql: `SELECT
@@ -62,7 +62,7 @@ FROM transport_set_violations
 ORDER BY violations;`,
   },
   {
-    label: "06 Â· PLATFORMS",
+    label: "06 &middot; PLATFORMS",
     title: "Review transportable platforms",
     description: "Review supported platforms and endian formats when the transport crosses platforms.",
     sql: `SELECT
@@ -82,7 +82,7 @@ ORDER BY platform_id;`,
   <main>
     <section class="resource-hero">
       <div class="container">
-        <p class="eyebrow">ORASOLU TOOLBOX Â· MIGRATION</p>
+        <p class="eyebrow">ORASOLU TOOLBOX &middot; MIGRATION</p>
         <h1>Transportable <span class="hero-accent">Tablespaces</span></h1>
         <p>
           Practical Oracle SQL for transportable tablespace planning, self-contained checks,
@@ -94,7 +94,7 @@ ORDER BY platform_id;`,
     <section class="resource-section">
       <div class="container">
         <div class="resource-intro">
-          <p class="eyebrow">ORASOLU TOOLBOX Â· MIGRATION</p>
+          <p class="eyebrow">ORASOLU TOOLBOX &middot; MIGRATION</p>
           <h2>Check the transport set before you move it</h2>
           <p>
             Transportable tablespaces can simplify large database migrations, but the source
@@ -120,7 +120,7 @@ ORDER BY platform_id;`,
         </div>
 
         <aside class="resource-note">
-          <p class="eyebrow">ORASOLU TOOLBOX Â· MIGRATION</p>
+          <p class="eyebrow">ORASOLU TOOLBOX &middot; MIGRATION</p>
           <h2>A transport set should be self-contained before export.</h2>
           <p>
             A transportable tablespace operation should begin with evidence about the

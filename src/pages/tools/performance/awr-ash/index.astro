@@ -7,10 +7,10 @@ import BaseLayout from "../../../../layouts/BaseLayout.astro";
   description="Practical Oracle SQL for investigating historical workload with AWR and Active Session History."
 >
   <main>
-    <section class="page-hero">
+    <section class="page-hero toolbox-hero">
       <div class="container">
-        <div class="eyebrow">ORASOLU TOOLBOX · PERFORMANCE</div>
-        <h1>AWR &amp; ASH</h1>
+        <div class="eyebrow">ORASOLU TOOLBOX &middot; PERFORMANCE</div>
+        <h1>AWR <span>&amp; ASH</span></h1>
         <p>
           Practical Oracle SQL for investigating historical workload,
           SQL performance, wait activity and active sessions.
@@ -21,7 +21,7 @@ import BaseLayout from "../../../../layouts/BaseLayout.astro";
     <section class="resource-section">
       <div class="container">
         <div class="resource-intro">
-          <div class="eyebrow">ORASOLU TOOLBOX · PERFORMANCE</div>
+          <div class="eyebrow">ORASOLU TOOLBOX &middot; PERFORMANCE</div>
           <h2>Use historical data to understand when and where performance changed</h2>
           <p>
             Start with AWR for interval-based workload and SQL statistics, then
@@ -33,7 +33,7 @@ import BaseLayout from "../../../../layouts/BaseLayout.astro";
         <div class="resource-grid">
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">01 · TOP SQL</div>
+              <div class="resource-block__label">01 &middot; TOP SQL</div>
               <h2>Find top SQL by elapsed time</h2>
             </div>
             <p class="resource-block__description">
@@ -67,7 +67,7 @@ FETCH FIRST 20 ROWS ONLY;</code></pre>
 
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">02 · SQL STATISTICS</div>
+              <div class="resource-block__label">02 &middot; SQL STATISTICS</div>
               <h2>Compare SQL activity between snapshots</h2>
             </div>
             <p class="resource-block__description">
@@ -98,7 +98,7 @@ ORDER BY ss.snap_id DESC;</code></pre>
 
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">03 · AWR WAIT EVENTS</div>
+              <div class="resource-block__label">03 &middot; AWR WAIT EVENTS</div>
               <h2>Find historical wait activity</h2>
             </div>
             <p class="resource-block__description">
@@ -127,7 +127,7 @@ FETCH FIRST 20 ROWS ONLY;</code></pre>
 
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">04 · ASH SESSIONS</div>
+              <div class="resource-block__label">04 &middot; ASH SESSIONS</div>
               <h2>Review active session history</h2>
             </div>
             <p class="resource-block__description">
@@ -157,7 +157,7 @@ FETCH FIRST 20 ROWS ONLY;</code></pre>
 
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">05 · ASH SQL ACTIVITY</div>
+              <div class="resource-block__label">05 &middot; ASH SQL ACTIVITY</div>
               <h2>Find SQL with repeated ASH samples</h2>
             </div>
             <p class="resource-block__description">
@@ -184,7 +184,7 @@ FETCH FIRST 20 ROWS ONLY;</code></pre>
 
           <article class="resource-block">
             <div class="resource-block__header">
-              <div class="resource-block__label">06 · ASH WAITS</div>
+              <div class="resource-block__label">06 &middot; ASH WAITS</div>
               <h2>Investigate wait events with ASH</h2>
             </div>
             <p class="resource-block__description">
@@ -212,7 +212,7 @@ FETCH FIRST 20 ROWS ONLY;</code></pre>
         </div>
 
         <div class="resource-note">
-          <div class="resource-note__label">ORASOLU TOOLBOX · PERFORMANCE</div>
+          <div class="resource-note__label">ORASOLU TOOLBOX &middot; PERFORMANCE</div>
           <h3>AWR shows interval-level history; ASH adds sampled session detail.</h3>
           <p>
             Use AWR to establish when workload or wait statistics changed, then
