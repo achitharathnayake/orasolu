@@ -49,10 +49,9 @@ const categoryImages: Record<string, string> = {
  </div>
 
  <h1>
-  <span class="hero-title-line hero-title-white"><span class="hero-oracle">Oracle</span> Database</span>
-  <span class="hero-title-line">Expertise &amp;</span>
-  <span class="hero-title-line">Solutions</span>
- </h1>
+   <span class="hero-title-line hero-title-white">Oracle Database</span>
+   <span class="hero-title-line hero-title-orange">Expertise &amp; Solutions</span>
+  </h1>
 
  <p>
  Oracle expertise across architecture, performance,
@@ -247,7 +246,56 @@ const categoryImages: Record<string, string> = {
   ["Automation", "/tools/automation/"]
   ].map(([tool, href]) => (
   <a href={href} class="tool-card">
-  <span class="tool-icon" aria-hidden="true"></span>
+  <span class="tool-icon" aria-hidden="true">
+  {tool === "SQL Scripts" && (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m8 8-4 4 4 4" />
+      <path d="m16 8 4 4-4 4" />
+      <path d="m14 5-4 14" />
+    </svg>
+  )}
+  {tool === "Performance" && (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4.5 16a8 8 0 1 1 15 0" />
+      <path d="M12 12l4-4" />
+      <path d="M7 19h10" />
+    </svg>
+  )}
+  {tool === "RAC" && (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="6" cy="12" r="2.5" />
+      <circle cx="18" cy="7" r="2.5" />
+      <circle cx="18" cy="17" r="2.5" />
+      <path d="m8.3 11 7.2-3" />
+      <path d="m8.3 13 7.2 3" />
+    </svg>
+  )}
+  {tool === "Data Guard" && (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3 19 6v5c0 4.5-2.8 7.8-7 10-4.2-2.2-7-5.5-7-10V6l7-3z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  )}
+  {tool === "RMAN" && (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 7h12" />
+      <path d="M7 7v12h10V7" />
+      <path d="M9 7V4h6v3" />
+      <path d="M9 12h6" />
+      <path d="M9 16h4" />
+    </svg>
+  )}
+  {tool === "Automation" && (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="4" width="5" height="5" rx="1" />
+      <rect x="15" y="4" width="5" height="5" rx="1" />
+      <rect x="9.5" y="15" width="5" height="5" rx="1" />
+      <path d="M9 6.5h6" />
+      <path d="M17.5 9v2.5l-5.5 3.5" />
+      <path d="M6.5 9v2.5l5.5 3.5" />
+    </svg>
+  )}
+</span>
   <strong>{tool}</strong>
   </a>
   ))}
@@ -264,7 +312,7 @@ const categoryImages: Record<string, string> = {
   </div>
 
   <h2>
-  EXPLORE . ENGINEER . AUTOMATE . EVOLVE .
+  Explore. Engineer. Automate. Evolve.
   </h2>
 
   <p>

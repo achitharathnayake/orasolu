@@ -204,14 +204,23 @@ img {
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(48px, 6vw, 82px);
-  line-height: 1.04;
+  font-size: clamp(50px, 6vw, 84px);
+  line-height: 1.02;
   letter-spacing: -.05em;
   color: #fff;
 }
 
-.hero h1 span {
-  color: var(--orange);
+.hero-title-line {
+  display: block;
+}
+.hero-title-white {
+  color: #fff !important;
+}
+.hero-title-orange {
+  margin-top: 10px;
+  font-size: 1em;
+  white-space: normal;
+  color: var(--orange) !important;
 }
 
 .hero-copy > p {
@@ -325,7 +334,7 @@ img {
    ========================================================= */
 
 .section {
-  padding: 90px 0;
+  padding: 82px 0;
 }
 
 .section--soft {
@@ -480,6 +489,37 @@ img {
   color: var(--orange);
 }
 
+.tool-icon {
+  display: inline-flex;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  color: var(--orange);
+  transition: transform .2s ease, color .2s ease;
+}
+
+.tool-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.tool-card {
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.tool-card:hover,
+.tool-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(244, 90, 36, .45);
+  box-shadow: 0 10px 24px rgba(17, 29, 44, .08);
+}
+
+.tool-card:hover .tool-icon,
+.tool-card:focus-visible .tool-icon {
+  transform: translateY(-1px) scale(1.05);
+}
 .tool-card strong {
   flex: 1;
   font-size: 13px;
@@ -496,6 +536,36 @@ img {
   color: #fff;
 }
 
+.community-card {
+  transition: background-color .25s ease, color .25s ease, box-shadow .25s ease;
+}
+
+.community-card:hover {
+  background: var(--orange);
+  box-shadow: 0 14px 32px rgba(17, 29, 44, .12);
+}
+
+.community-card:hover .eyebrow {
+  color: rgba(255, 255, 255, .82);
+}
+
+.community-card:hover p {
+  color: rgba(255, 255, 255, .9);
+}
+
+.community-card .button--secondary {
+  color: #fff;
+  background: var(--navy);
+  border-color: var(--navy);
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.community-card .button--secondary:hover,
+.community-card .button--secondary:focus-visible {
+  color: var(--navy);
+  background: #fff;
+  border-color: #fff;
+}
 .community-card .eyebrow {
   color: #ff8b56;
 }
@@ -529,7 +599,7 @@ img {
    ========================================================= */
 
 .topics-band {
-  padding: 90px 0;
+  padding: 82px 0;
   background: #fff;
 }
 
@@ -574,7 +644,7 @@ img {
   max-width: 850px;
   margin: 0;
   font-size: clamp(48px, 6vw, 78px);
-  line-height: 1.04;
+  line-height: 1.02;
   letter-spacing: -.045em;
   color: var(--ink);
 }
@@ -1136,7 +1206,7 @@ img {
   }
 
   .section {
-    padding: 65px 0;
+    padding: 60px 0;
   }
 
 }
